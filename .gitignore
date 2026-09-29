@@ -1,0 +1,11 @@
+# Python and OS leftovers
+__pycache__/
+*.pyc
+.DS_Store
+
+# local previews and caches written by the scripts
+.tree-preview.svg
+.old-tree.svg
+.fig.svg
+assets/fonts/*.full.woff2
+node_modules/
