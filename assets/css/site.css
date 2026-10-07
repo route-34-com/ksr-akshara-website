@@ -1,9 +1,14 @@
 /* KSR Akshara Academy - redesign concept
    Palette: logo blue (brand) + uniform red (single accent).
-   Shape rule: cards 18px, media 22px, inputs 12px, buttons and chips full pill. */
+   Shape rule: top-level panels and tiles 26px, nested cards 18px, media 22px, inputs 12px, buttons and chips full pill.
+   Layout rule: the page is a grey canvas; every section is its own panel (see "Modular layout" at the end). */
 
 :root {
-  --bg: #f5f8fb;
+  --bg: #e9eef3;
+  --panel-tint: #dbe9f6;
+  --r-panel: 26px;
+  --gap: clamp(10px, 1.2vw, 16px);
+  --pad: clamp(22px, 4vw, 56px);
   --surface: #ffffff;
   --surface-2: #eaf2f9;
   --ink: #0d1b2b;
@@ -30,14 +35,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #09121c; --surface: #0f1b28; --surface-2: #132436; --ink: #e7eef6; --ink-2: #c3d0de;
+    --bg: #060d15; --panel-tint: #102639; --surface: #0f1b28; --surface-2: #132436; --ink: #e7eef6; --ink-2: #c3d0de;
     --muted: #9aabbe; --line: #1f3347; --brand: #6cb4ea; --brand-ink: #a9d4f5; --brand-soft: #12283d;
     --deep: #0e3a5f; --accent: #d93a2c; --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 16px 40px -16px rgb(0 0 0 / .6);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #09121c; --surface: #0f1b28; --surface-2: #132436; --ink: #e7eef6; --ink-2: #c3d0de;
+  --bg: #060d15; --panel-tint: #102639; --surface: #0f1b28; --surface-2: #132436; --ink: #e7eef6; --ink-2: #c3d0de;
   --muted: #9aabbe; --line: #1f3347; --brand: #6cb4ea; --brand-ink: #a9d4f5; --brand-soft: #12283d;
   --deep: #0e3a5f; --accent: #d93a2c; --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 16px 40px -16px rgb(0 0 0 / .6);
   color-scheme: dark;
@@ -61,10 +66,6 @@ p { margin: 0; text-wrap: pretty; }
 .muted { color: var(--muted); }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
 .section { padding: clamp(28px, 3.5vw, 48px) 0; }
-/* Two plain sections in a row share one gap instead of doubling it */
-.section:not(.section-tint) + .section:not(.section-tint) { padding-top: 0; }
-/* The footer's own border is the separator: no extra margin after the last section */
-main > .section:last-child:not(.section-tint) { padding-bottom: clamp(28px, 3.5vw, 48px); }
 .section-tint { background: var(--surface-2); }
 .stack > * + * { margin-top: 1rem; }
 .stack-lg > * + * { margin-top: 1.5rem; }
@@ -185,23 +186,6 @@ main > .section:last-child:not(.section-tint) { padding-bottom: clamp(28px, 3.5v
   .hero-media { height: 380px; }
 }
 @media (max-width: 520px) { .hero-media { height: 300px; grid-template-columns: 1fr; grid-template-rows: 1fr; } .hero-media .m2, .hero-media .m3 { display: none; } .hero-media .m1 { grid-row: auto; } }
-
-/* Facts band */
-.facts { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); }
-.facts-grid { display: grid; grid-template-columns: repeat(5, 1fr); }
-.fact { padding: 28px 20px; }
-.fact + .fact { border-left: 1px solid var(--line); }
-.fact strong { display: block; font: 600 clamp(1.8rem, 3vw, 2.4rem)/1 var(--font-display); color: var(--brand-ink); letter-spacing: -.03em; }
-:root[data-theme="dark"] .fact strong { color: var(--brand); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fact strong { color: var(--brand); } }
-.fact span { display: block; margin-top: .5rem; font-size: .92rem; color: var(--muted); line-height: 1.4; }
-@media (max-width: 900px) {
-  .facts-grid { grid-template-columns: repeat(2, 1fr); }
-  .fact + .fact { border-left: 0; }
-  .fact { border-bottom: 1px solid var(--line); }
-  .fact:nth-child(even) { border-left: 1px solid var(--line); }
-  .fact:last-child { grid-column: 1 / -1; border-bottom: 0; }
-}
 
 /* Stages (tabs) */
 .stages { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(24px, 4vw, 48px); margin-top: 2rem; align-items: start; }
@@ -463,7 +447,7 @@ form.is-sent .form-success { display: block; animation: fadeUp .5s var(--ease); 
 @media (max-width: 520px) { .foot-grid { grid-template-columns: 1fr; } }
 
 /* Floating WhatsApp */
-.fab { position: fixed; right: 18px; bottom: 18px; z-index: 40; width: 56px; height: 56px; border-radius: 999px; background: #1f9d55; color: #fff; display: grid; place-items: center; font-size: 1.7rem; box-shadow: 0 10px 30px -8px rgb(16 90 50 / .6); text-decoration: none; transition: transform .25s var(--ease); }
+.fab { position: fixed; right: 18px; bottom: 18px; z-index: 40; width: 56px; height: 56px; border-radius: 999px; background: #25d366; color: #fff; display: grid; place-items: center; font-size: 1.9rem; box-shadow: 0 10px 30px -8px rgb(18 140 70 / .6); text-decoration: none; transition: transform .25s var(--ease); }
 .fab:hover { transform: translateY(-2px) scale(1.04); }
 
 /* Motion */
@@ -603,13 +587,6 @@ form.is-sent .form-success { display: block; animation: fadeUp .5s var(--ease); 
   .tree-hero::after { box-shadow: inset 0 0 90px 10px var(--vignette); }
 }
 
-/* ---------------------------------------------------------------- homepage: notice bar and emblem tree */
-.notice-bar { background: var(--brand-soft); border-bottom: 1px solid var(--line); font-size: .94rem; }
-.notice-bar .wrap { display: flex; align-items: center; gap: .6rem; min-height: 46px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
-.notice-bar i.ph-megaphone-simple { color: var(--brand); font-size: 1.2rem; }
-.notice-bar a { margin-left: auto; font-weight: 600; color: var(--brand); text-decoration: none; display: inline-flex; gap: .3rem; align-items: center; }
-.notice-bar a:hover { text-decoration: underline; }
-@media (max-width: 640px) { .notice-bar a { margin-left: 0; } }
 .hero-tree { position: relative; display: grid; justify-items: center; gap: 14px; }
 .hero-tree::before { content: ""; position: absolute; z-index: 0; left: 50%; top: 44%; width: 118%; aspect-ratio: 1; transform: translate(-50%, -50%);
   background: radial-gradient(closest-side, color-mix(in srgb, var(--brand) 24%, transparent), transparent 72%); pointer-events: none; }
@@ -647,11 +624,156 @@ form.is-sent .form-success { display: block; animation: fadeUp .5s var(--ease); 
 .notice .link-arrow { font-size: .9rem; }
 .notices .btn { justify-content: center; }
 @media (max-width: 1000px) { .news-layout { grid-template-columns: 1fr; } .notices { position: static; order: -1; } }
-.hero { overflow-x: clip; }
-.notice-bar .wrap > span { flex: 1 1 auto; min-width: 0; }
-@media (max-width: 640px) { .notice-bar .wrap { flex-wrap: nowrap; align-items: flex-start; font-size: .9rem; } .notice-bar .wrap > span { flex-basis: 0; } .notice-bar a { white-space: nowrap; } }
 
-/* homepage hero: give the tree the larger share */
-.hero-grid:has(.hero-tree) { grid-template-columns: .9fr 1.1fr; }
-@media (max-width: 900px) { .hero-grid:has(.hero-tree) { grid-template-columns: 1fr; } }
-.hero-grid:has(.hero-tree) h1 { font-size: clamp(2.2rem, 3.9vw, 3.4rem); }
+
+/* ---------------------------------------------------------------- Modular layout
+   The page is a grey canvas. Each section is a rounded panel with a gap around it:
+   .section            white panel
+   .section-tint       blue panel
+   .section-deep       navy panel
+   .section.bare       no panel; its children are tiles (bento grids) */
+/* the header hangs from the top edge like a tab, so nothing scrolls through a gap above it */
+.site-header { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: 0; padding: 0 var(--gutter); }
+.site-header .nav { max-width: var(--maxw); height: 68px; padding: 0 12px 0 10px; border-radius: 0 0 20px 20px; border: 1px solid var(--line); border-top: 0;
+  background: var(--surface); transition: box-shadow .3s; }
+.site-header.is-scrolled .nav { box-shadow: var(--shadow); }
+.immersive .site-header { background: none; }
+
+.section, .page-head { padding: 0 var(--gutter); margin-top: var(--gap); background: none; }
+.section > .wrap, .page-head > .wrap { max-width: var(--maxw); padding: var(--pad); border-radius: var(--r-panel); background: var(--surface); }
+.section-tint > .wrap { background: var(--panel-tint); }
+.section-deep > .wrap { background: var(--deep); color: #fff; overflow: hidden; }
+.section-deep .lede { color: #cfe3f4; }
+.section-deep .link-arrow { color: #9fd0f5; }
+.section.bare > .wrap { padding: 0; background: none; border-radius: 0; }
+.section:has(> .wrap > .cta-band) > .wrap { padding: 0; background: none; }
+.cta-band { border-radius: var(--r-panel); padding: var(--pad); }
+main > :last-child { margin-bottom: var(--gap); }
+.page-head .page-banner { margin-bottom: 0; }
+
+/* nested cards sit on a soft fill inside white panels, and on white inside blue panels */
+.section:not(.section-tint) :is(.card, .news-card, .quote:not(.lead), .age, .notice, .leader-card) { background: var(--bg); border-color: transparent; }
+.section:not(.section-tint) .chip { background: var(--bg); border-color: transparent; }
+.toc { background: inherit; top: 86px; }
+.section > .wrap:has(.toc) { background: var(--surface); }
+
+/* footer: one more panel */
+.site-footer { background: none; border: 0; padding: 0 var(--gutter) var(--gap); }
+.site-footer > .wrap { max-width: var(--maxw); background: var(--surface); border-radius: var(--r-panel); padding: var(--pad) var(--pad) 22px; }
+
+/* tiles: the building block of every bento */
+.tile { border: 0; border-radius: var(--r-panel); }
+.tile.head { background: var(--surface); justify-content: space-between; gap: 1.25rem; padding: clamp(22px, 3vw, 36px); }
+.tile.head h2 { font-size: clamp(1.7rem, 2.8vw, 2.5rem); }
+.tile.tint { background: var(--panel-tint); }
+.tile.accent { background: var(--accent); color: #fff; }
+.tile.accent p { color: #ffe3df; }
+.tile.tint .chip { background: var(--surface); border-color: transparent; }
+
+/* hero: intro tile, tree tile, five fact tiles */
+.hero { padding: var(--gap) var(--gutter) 0; }
+.hero > .wrap { padding: 0; }
+.hero-bento { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+.panel { background: var(--surface); border-radius: var(--r-panel); padding: var(--pad); min-width: 0; }
+.intro { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+.intro h1 { margin-top: 1.5rem; font-size: clamp(2.2rem, 3.9vw, 3.4rem); }
+.hero h1 em { font-style: normal; color: var(--brand); }
+.announce { display: inline-flex; align-items: center; gap: .6rem; padding: .35rem .9rem .35rem .35rem; border-radius: 999px; background: var(--brand-soft);
+  color: var(--ink); text-decoration: none; font-size: .92rem; font-weight: 500; max-width: 100%; }
+.announce span { background: var(--deep); color: #fff; border-radius: 999px; padding: .3rem .7rem; font-weight: 600; font-size: .82rem; white-space: nowrap; }
+:root[data-theme="dark"] .announce span { background: var(--brand); color: #06101a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .announce span { background: var(--brand); color: #06101a; } }
+.announce i { color: var(--brand); transition: transform .25s var(--ease); }
+.announce:hover i { transform: translateX(3px); }
+.tree-panel { overflow: hidden; padding: clamp(16px, 2vw, 28px); background: radial-gradient(75% 70% at 50% 42%, var(--surface) 0%, var(--panel-tint) 100%); }
+.hero-tree::before { display: none; }
+.hero-tree .tree-stage { height: clamp(420px, 64vh, 600px); }
+.facts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--gap); list-style: none; margin: 0; padding: 0; }
+.fact { background: var(--surface); border-radius: var(--r-panel); padding: clamp(18px, 2vw, 26px); }
+.fact strong { display: block; font: 600 clamp(1.8rem, 3vw, 2.4rem)/1 var(--font-display); color: var(--brand-ink); letter-spacing: -.03em; }
+:root[data-theme="dark"] .fact strong { color: var(--brand); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fact strong { color: var(--brand); } }
+.fact span { display: block; margin-top: .6rem; font-size: .92rem; color: var(--muted); line-height: 1.4; }
+.fact.fact-deep { background: var(--deep); }
+.fact.fact-deep strong { color: #fff; } .fact.fact-deep span { color: #cfe3f4; }
+@media (max-width: 900px) {
+  .hero-bento { grid-template-columns: 1fr; }
+  .hero-tree .tree-stage { height: auto; width: min(100%, 420px); }
+  .facts { grid-template-columns: 1fr 1fr; }
+  .fact:last-child { grid-column: 1 / -1; }
+}
+
+/* news: one lead story, two compact ones */
+.news-bento { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 1fr 1fr; gap: 14px; margin-top: 1.75rem; }
+.news-bento > :first-child { grid-row: 1 / 3; }
+.news-bento > :first-child h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); }
+.news-card.compact { grid-template-columns: 42% 1fr; grid-template-rows: 1fr; align-content: stretch; align-items: stretch; }
+.news-card.compact .film.news-media { aspect-ratio: auto; height: auto; min-height: 150px; }
+.news-card.compact .news-body { align-content: center; }
+.news-card.compact .news-body p { -webkit-line-clamp: 2; }
+.news-card.compact .play { width: 46px; height: 46px; font-size: 1.1rem; }
+@media (max-width: 800px) { .news-bento { grid-template-columns: 1fr; grid-template-rows: none; } .news-bento > :first-child { grid-row: auto; } }
+@media (max-width: 520px) { .news-card.compact { grid-template-columns: 1fr; } .news-card.compact .film.news-media { aspect-ratio: 16 / 9; height: auto; } }
+
+/* life at Akshara: the heading is a tile too */
+.bento { margin-top: 0; gap: var(--gap); grid-auto-rows: 210px;
+  grid-template-areas: "head head isa isa" "atl ted isa isa" "ncc ncc robo mun" "ncc ncc clubs clubs"; }
+.t-head { grid-area: head; }
+@media (max-width: 900px) {
+  .bento { grid-auto-rows: 200px; grid-template-areas: "head head" "isa isa" "isa isa" "atl ted" "ncc ncc" "robo mun" "clubs clubs"; }
+}
+@media (max-width: 520px) {
+  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; grid-template-areas: "head head" "isa isa" "atl atl" "ted ted" "ncc ncc" "robo mun" "clubs clubs"; }
+  .t-head, .t-robo, .t-mun { min-height: 0; }
+  .t-robo, .t-mun { padding: 18px; } .t-robo h3, .t-mun h3 { font-size: 1.05rem; }
+}
+
+/* campus film: a full-width tile */
+.film { border-radius: var(--r-panel); margin-top: 0; }
+.bare .film { aspect-ratio: 16 / 6; }
+@media (max-width: 640px) { .bare .film { aspect-ratio: 4 / 3; } }
+
+/* eight reasons: heading tile with photo, then one tile per group */
+.why-bento { display: grid; grid-template-columns: .9fr 1fr 1fr; gap: var(--gap); grid-template-areas: "head learning learning" "head safety living"; }
+.why-head { grid-area: head; justify-content: flex-start; }
+.why-head img { border-radius: var(--r-media); width: 100%; flex: 1; min-height: 220px; object-fit: cover; margin-top: auto; }
+.why-tile { background: var(--surface); justify-content: flex-start; padding: clamp(22px, 2.6vw, 32px); }
+.w-learning { grid-area: learning; } .w-safety { grid-area: safety; background: var(--panel-tint); } .w-living { grid-area: living; }
+.w-safety .why-item i { background: var(--surface); }
+.why-label { font: 600 .82rem/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.why-tile .why-items { margin-top: 1.25rem; grid-template-columns: 1fr 1fr; }
+.w-safety .why-items, .w-living .why-items { grid-template-columns: 1fr; }
+@media (max-width: 900px) { .why-bento { grid-template-columns: 1fr 1fr; grid-template-areas: "head head" "learning learning" "safety living"; } }
+@media (max-width: 600px) { .why-bento { grid-template-columns: 1fr; grid-template-areas: "head" "learning" "safety" "living"; } .why-tile .why-items { grid-template-columns: 1fr; } }
+
+/* sports: navy panel */
+.section-deep .marquee { margin-left: calc(var(--pad) * -1); margin-right: calc(var(--pad) * -1); margin-bottom: calc(var(--pad) * -.4); }
+.section-deep .sport figcaption { color: #fff; }
+
+/* admissions: info tile + form tile */
+.bare .admit { gap: var(--gap); align-items: stretch; }
+.admit-info { display: block; background: var(--surface); padding: var(--pad); }
+.admit-info .age { background: var(--bg); border-color: transparent; }
+.admit-form { display: block; padding: 0; background: none; }
+.admit-form .form-card { box-shadow: none; border: 0; height: 100%; border-radius: var(--r-panel); padding: var(--pad); }
+
+/* tree page: the stage is one large panel */
+.tree-hero { margin: var(--gap) var(--gutter) 0; border-radius: var(--r-panel); height: calc(100dvh - 68px - 2 * var(--gap)); }
+.why-head h2 { font-size: clamp(1.6rem, 2.3vw, 2.1rem); }
+@media (max-width: 640px) {
+  .news-media button { flex-direction: row; align-items: center; justify-content: center; }
+  .announce { border-radius: 18px; flex-wrap: wrap; padding: .45rem .8rem .55rem .45rem; row-gap: .35rem; }
+}
+
+/* footer socials in their own brand colours */
+.foot-grid .social { border: 0; color: #fff; font-size: 1.25rem; transition: transform .25s var(--ease), filter .2s; }
+.foot-grid .social:hover { color: #fff; transform: translateY(-2px); filter: brightness(1.08); }
+.social.fb { background: #1877f2; }
+.social.ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%); }
+.social.yt { background: #ff0000; }
+.social.wa { background: #25d366; }
+
+/* sports page: seven sports, athletics takes a double-width tile so the grid has no hole */
+.sport-grid figure { container-type: inline-size; }
+.sport-grid .wide { grid-column: span 2; }
+.sport-grid .wide img { aspect-ratio: auto; height: calc((100cqw - 14px) / 2); }

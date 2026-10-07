@@ -146,10 +146,10 @@ def layout(r, cur, title, desc, body):
       <a class="brand" href="{href(r, "")}"><img class="brand-mark" src="{r}assets/img/logo-emblem.jpg" alt="" width="50" height="50"><span class="brand-text"><strong>KSR Akshara Academy</strong><span>Nurturing young minds</span></span></a>
       <address>KSR Kalvi Nagar, Tiruchengode 637 215<br>Namakkal District, Tamil Nadu</address>
       <div class="socials">
-        <a class="icon-btn" href="https://www.facebook.com/ksrakshara" aria-label="Facebook"><i class="ph ph-facebook-logo"></i></a>
-        <a class="icon-btn" href="https://www.instagram.com/ksrakshara2010/" aria-label="Instagram"><i class="ph ph-instagram-logo"></i></a>
-        <a class="icon-btn" href="https://www.youtube.com/@ksrakshara" aria-label="YouTube"><i class="ph ph-youtube-logo"></i></a>
-        <a class="icon-btn" href="https://wa.me/919894932323" aria-label="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
+        <a class="icon-btn social fb" href="https://www.facebook.com/ksrakshara" aria-label="Facebook"><i class="ph ph-facebook-logo"></i></a>
+        <a class="icon-btn social ig" href="https://www.instagram.com/ksrakshara2010/" aria-label="Instagram"><i class="ph ph-instagram-logo"></i></a>
+        <a class="icon-btn social yt" href="https://www.youtube.com/@ksrakshara" aria-label="YouTube"><i class="ph ph-youtube-logo"></i></a>
+        <a class="icon-btn social wa" href="https://wa.me/919894932323" aria-label="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
       </div>
     </div>
     <div><h2 class="foot-title">School</h2><ul>
@@ -259,11 +259,6 @@ def home(r):
             ("ph-soccer-ball", "Sports and performing arts", "A floodlit turf, skating rink, dance, drama and music."),
         ]),
     ]
-    why_html = "".join(
-        f'<div class="why-group reveal"><h3>{g}</h3><div class="why-items">' + "".join(
-            f'<div class="why-item"><i class="ph {ic}"></i><div><strong>{t}</strong><p>{d}</p></div></div>' for ic, t, d in items)
-        + "</div></div>" for g, items in why)
-
     quotes = [
         ("lead", "I very much hope to see many chemists coming from this school.", "professor.jpg", "Prof. Dr. Robert Huber", "Nobel Laureate in Chemistry, 1988", None),
         ("", "My son Nithin Rohit completed Grade XII here and went on to study Electrical Engineering at IIT Jodhpur. The JEE programme was truly amazing.", "Kumar-120x120.jpg", "K. Kumar", "Parent of Nithin Rohit", "IIT Jodhpur"),
@@ -279,7 +274,7 @@ def home(r):
 
     sports = [("sgfleet.jpg", "Athletics"), ("Skatings_sports.jpg", "Skating"), ("basketball.jpg", "Basketball"),
               ("cricket.jpg", "Cricket"), ("vollyball.jpg", "Volleyball"), ("handball.jpg", "Handball"),
-              ("ches.jpg", "Chess"), ("House-system.jpg", "House competitions")]
+              ("ches.jpg", "Chess")]
     s_items = "".join(f'<figure class="sport"><img src="{img(i)}" alt="{t} at Akshara" loading="lazy"><figcaption>{t}</figcaption></figure>' for i, t in sports)
     s_dupe = "".join(f'<figure class="sport" aria-hidden="true"><img src="{img(i)}" alt="" loading="lazy"><figcaption>{t}</figcaption></figure>' for i, t in sports)
 
@@ -287,13 +282,17 @@ def home(r):
     ages_html = "".join(f'<div class="age"><strong>{a}</strong><span>{b}</span></div>' for a, b in ages)
 
     tree = tree_parts(r)
-    latest = "".join(news_card(r, n, i) for i, n in enumerate(NEWS[:3]))
+    lead, *rest = NEWS[:3]
+    latest = news_card(r, lead, 0, h="h3") + "".join(
+        news_card(r, n, i + 1).replace('class="news-card reveal"', 'class="news-card compact reveal"') for i, n in enumerate(rest))
+    why_tiles = "".join(
+        f'<div class="tile why-tile w-{g.lower()} reveal" style="--i:{i}"><h3 class="why-label">{g}</h3><div class="why-items">' + "".join(
+            f'<div class="why-item"><i class="ph {ic}"></i><div><strong>{t}</strong><p>{d}</p></div></div>' for ic, t, d in items)
+        + "</div></div>" for i, (g, items) in enumerate(why))
     return f"""
-<div class="notice-bar"><div class="wrap"><i class="ph ph-megaphone-simple"></i><span><strong>Admissions 2027-28</strong> open from Vijayadasami for all classes.</span>
-  <a href="{href(r, "admission")}">Enquire now <i class="ph ph-arrow-right"></i></a></div></div>
-<section class="hero"><div class="wrap hero-grid">
-  <div class="intro">
-    <span class="eyebrow"><i class="ph-fill ph-seal-check"></i>CBSE school in Tiruchengode</span>
+<section class="hero"><div class="wrap hero-bento">
+  <div class="panel intro">
+    <a class="announce" href="{href(r, "admission")}"><span>Admissions 2027-28</span>Open from Vijayadasami for all classes <i class="ph ph-arrow-right"></i></a>
     <h1>Nurturing young minds and hearts of <em>tomorrow's leaders.</em></h1>
     <p class="lede">From Pre-KG to Grade XII, Aksharites learn through inquiry, sport, the arts and strong values.</p>
     <div class="hero-ctas">
@@ -301,28 +300,27 @@ def home(r):
       <a class="btn btn-ghost" href="{href(r, "contact-us")}#visit"><i class="ph ph-map-pin"></i>Book a campus visit</a>
     </div>
   </div>
-  <div class="hero-tree" data-tree="mini" data-link="{href(r, "akshara-tree")}" data-sway-x="{tree["sx"]}" data-sway-y="720">
+  <div class="panel tree-panel hero-tree" data-tree="mini" data-link="{href(r, "akshara-tree")}" data-sway-x="{tree["sx"]}" data-sway-y="720">
     <div class="tree-stage" style="aspect-ratio:{tree["ratio"]}">{tree["svg"]}<div class="tree-tip" aria-hidden="true"></div></div>
     <a class="link-arrow hero-tree-link" href="{href(r, "akshara-tree")}">Every leaf of our emblem tells a story <i class="ph ph-arrow-right"></i></a>
   </div>
+  <ul class="facts" aria-label="Akshara at a glance">
+    <li class="fact reveal"><strong>1984</strong><span>KSR Educational and Charitable Trust founded</span></li>
+    <li class="fact reveal" style="--i:1"><strong>16</strong><span>KSR institutions, from Pre-KG to Ph.D.</span></li>
+    <li class="fact fact-deep reveal" style="--i:2"><strong>4,500+</strong><span>students across the three KSR schools</span></li>
+    <li class="fact reveal" style="--i:3"><strong>3x</strong><span>British Council International School Award</span></li>
+    <li class="fact reveal" style="--i:4"><strong>25 km</strong><span>GPS-tracked bus network around Tiruchengode</span></li>
+  </ul>
 </div></section>
 {tree["data"]}
 
-<section class="facts" aria-label="Akshara at a glance"><div class="wrap facts-grid">
-  <div class="fact reveal"><strong>1984</strong><span>KSR Educational and Charitable Trust founded</span></div>
-  <div class="fact reveal" style="--i:1"><strong>16</strong><span>KSR institutions, from Pre-KG to Ph.D.</span></div>
-  <div class="fact reveal" style="--i:2"><strong>4,500+</strong><span>students across the three KSR schools</span></div>
-  <div class="fact reveal" style="--i:3"><strong>3x</strong><span>British Council International School Award</span></div>
-  <div class="fact reveal" style="--i:4"><strong>25 km</strong><span>GPS-tracked bus network around Tiruchengode</span></div>
-</div></section>
-
-<section class="section section-tint latest"><div class="wrap">
+<section class="section latest"><div class="wrap">
   <div class="voices-head reveal"><h2>Latest from Akshara</h2>
     <a class="link-arrow" href="{href(r, "events")}">All news and events <i class="ph ph-arrow-right"></i></a></div>
-  <div class="news-grid news-grid-3">{latest}</div>
+  <div class="news-bento">{latest}</div>
 </div></section>
 
-<section class="section" id="academics"><div class="wrap">
+<section class="section section-tint" id="academics"><div class="wrap">
   <div class="stack reveal" style="max-width:62ch"><h2>One curriculum, four stages, shaped by the NEP.</h2>
   <p class="lede">Akshara follows CBSE expectations and builds skills for an international context. Every stage has its own way of teaching.</p></div>
   <div class="stages" data-tabs>
@@ -331,14 +329,17 @@ def home(r):
   </div>
 </div></section>
 
-<section class="section section-tint"><div class="wrap">
-  <span class="eyebrow reveal">Life at Akshara</span>
-  <h2 class="reveal" style="margin-top:.9rem;max-width:22ch">More than a classroom, every single day.</h2>
+<section class="section bare"><div class="wrap">
   <div class="bento">
+    <div class="tile head t-head reveal"><h2>More than a classroom, every single day.</h2>
+      <a class="link-arrow" href="{href(r, "life-akshara")}">Life at Akshara <i class="ph ph-arrow-right"></i></a></div>
     <a class="tile photo t-isa reveal" href="{href(r, "life-akshara")}#isa"><img src="{img("Fieldstrip.jpg")}" alt="Akshara students on a field trip" loading="lazy">
       <h3>International School Award, three times in a row</h3><p>The British Council honours schools that bring the world into the classroom. Akshara has earned it for 2022 to 2025.</p></a>
     <a class="tile photo t-atl reveal" style="--i:1" href="{href(r, "life-akshara")}#atl"><img src="{img("Robotics.jpg")}" alt="Robotics kit being assembled" loading="lazy"><h3>Atal Tinkering Lab</h3><p>Grades VI to XII</p></a>
     <a class="tile photo t-ted reveal" style="--i:2" href="{href(r, "life-akshara")}#ted"><img src="{img("ted.jpg")}" alt="A student giving a TED-Ed talk" loading="lazy"><h3>TED-Ed Club</h3><p>Student talks, global sessions</p></a>
+    <a class="tile photo t-ncc reveal" href="{href(r, "life-akshara")}#ncc"><img src="{img("ncc.jpg")}" alt="NCC cadets marching in formation" loading="lazy"><h3>NCC, Scouts and Guides</h3><p>Drill, first aid, map reading and camp training</p></a>
+    <a class="tile brand t-robo reveal" style="--i:1" href="{href(r, "life-akshara")}#steam"><i class="ph ph-cpu big-icon"></i><h3>STEAM and Robotics</h3><p>From Kindergarten to Grade 8</p></a>
+    <a class="tile accent t-mun reveal" style="--i:2" href="{href(r, "life-akshara")}#mun"><i class="ph ph-globe big-icon"></i><h3>Model UN with IIMUN</h3><p>Students debate as diplomats</p></a>
     <div class="tile tint t-clubs reveal" style="--i:1"><div class="chips">
       <span class="chip"><i class="ph ph-palette"></i>Art</span><span class="chip"><i class="ph ph-cooking-pot"></i>Cookery</span>
       <span class="chip"><i class="ph ph-camera"></i>Photography</span><span class="chip"><i class="ph ph-leaf"></i>Nature</span>
@@ -346,26 +347,22 @@ def home(r):
       <span class="chip"><i class="ph ph-globe-hemisphere-east"></i>MUN</span><span class="chip"><i class="ph ph-microphone-stage"></i>TED-Ed</span>
       <span class="chip"><i class="ph ph-function"></i>Math</span></div>
       <div><h3>Nine clubs to choose from</h3><p class="muted">Every student joins at least one.</p></div></div>
-    <a class="tile brand t-robo reveal" href="{href(r, "life-akshara")}#steam"><i class="ph ph-cpu big-icon"></i><h3>STEAM and Robotics</h3><p>From Kindergarten to Grade 8</p></a>
-    <a class="tile brand t-mun reveal" style="--i:1;background:var(--accent)" href="{href(r, "life-akshara")}#mun"><i class="ph ph-globe big-icon"></i><h3>Model UN with IIMUN</h3><p style="color:#ffe3df">Students debate as diplomats</p></a>
-    <a class="tile photo t-ncc reveal" style="--i:2" href="{href(r, "life-akshara")}#ncc"><img src="{img("ncc.jpg")}" alt="NCC cadets marching in formation" loading="lazy"><h3>NCC, Scouts and Guides</h3><p>Drill, first aid, map reading and camp training</p></a>
   </div>
 </div></section>
 
-<section class="section"><div class="wrap">
-  <h2 class="reveal" style="max-width:24ch">See a day at Akshara.</h2>
+<section class="section bare"><div class="wrap">
   <div class="film reveal">
     <button type="button" data-yt="{YT_ID}" aria-label="Play the campus film"><span class="play"><i class="ph-fill ph-play"></i></span>
-      <span><strong>The Akshara campus film</strong><small>Classrooms, labs, stage and turf in a few minutes.</small></span></button>
+      <span><strong>See a day at Akshara</strong><small>Classrooms, labs, stage and turf in a few minutes.</small></span></button>
     <img src="{img("why-akshara.jpg")}" alt="" loading="lazy">
   </div>
 </div></section>
 
-<section class="section section-tint"><div class="wrap why">
-  <div class="why-aside reveal"><h2>Eight reasons parents choose Akshara.</h2>
-    <p class="lede" style="margin-top:1rem">Quality and international standards of education, in an Indian context.</p>
+<section class="section bare"><div class="wrap why-bento">
+  <div class="tile head why-head reveal"><div class="stack"><h2>Eight reasons parents choose Akshara.</h2>
+    <p class="lede">Quality and international standards of education, in an Indian context.</p></div>
     <img src="{img("KSR-children.jpg")}" alt="Four smiling Akshara students in uniform" loading="lazy"></div>
-  <div class="why-groups">{why_html}</div>
+  {why_tiles}
 </div></section>
 
 <section class="section"><div class="wrap" data-carousel>
@@ -376,15 +373,15 @@ def home(r):
   <a class="link-arrow" href="{href(r, "testimonial")}">Read all testimonials <i class="ph ph-arrow-right"></i></a>
 </div></section>
 
-<section class="section section-tint" style="overflow:hidden"><div class="wrap">
+<section class="section section-deep"><div class="wrap">
   <div class="stack reveal" style="max-width:60ch"><h2>A floodlit football turf, and a sport for every child.</h2>
   <p class="lede">After-school coaching in cricket, athletics, volleyball, football, basketball and more, planned around study time.</p>
-  <a class="link-arrow" href="{href(r, "sports")}">Explore sports <i class="ph ph-arrow-right"></i></a></div></div>
+  <a class="link-arrow" href="{href(r, "sports")}">Explore sports <i class="ph ph-arrow-right"></i></a></div>
   <div class="marquee"><div class="marquee-track">{s_items}{s_dupe}</div></div>
-</section>
+</div></section>
 
-<section class="section" id="admissions"><div class="wrap admit">
-  <div class="reveal">
+<section class="section bare" id="admissions"><div class="wrap admit">
+  <div class="tile admit-info reveal">
     <span class="eyebrow">Admissions 2027-28</span>
     <h2 style="margin-top:.9rem">Admissions open from Vijayadasami to March.</h2>
     <p class="lede" style="margin-top:1rem">Seats are offered first come, first served. Late applications in April depend on availability.</p>
@@ -395,7 +392,7 @@ def home(r):
       <li><div><strong>Entrance assessment</strong><p>From Senior KG onwards. Submit the form on the day.</p></div></li>
     </ol>
   </div>
-  <div class="reveal" style="--i:1">{enquiry_form()}</div>
+  <div class="tile admit-form reveal" style="--i:1">{enquiry_form()}</div>
 </div></section>
 """
 
@@ -435,7 +432,7 @@ def management(r):
     img = lambda n: f"{r}assets/img/{n}"
     return page_head(r, [("About", "about-us"), ("Management", None)], "The people behind Akshara.",
                      "Founded under the KSR Educational and Charitable Trust, established in 1984.") + f"""
-<section class="section" style="padding-top:12px"><div class="wrap">
+<section class="section"><div class="wrap">
   <article class="leader reveal"><img src="{img("founder.jpg")}" alt="Lion Thiruvalar Dr. K.S. Rangasamy" style="object-position:40% 30%">
     <div><span class="role">Founder Chairman</span><h2>Lion Thievathiru Dr. K.S. Rangasamy MJF</h2>
     <div class="prose"><p>Known as KSR, he was a prominent educationist, philanthropist and visionary leader who made it his life's mission to make quality education accessible to children and young adults across the country and abroad.</p>
@@ -493,7 +490,7 @@ def documents(r):
     link = lambda t, f, i: f'<a class="card doc-link reveal" style="--i:{i % 3}" href="{UP}/2022/03/{f}" target="_blank" rel="noopener"><i class="ph ph-file-pdf"></i><span>{t}</span><i class="ph ph-arrow-up-right"></i></a>'
     return page_head(r, [("About", "about-us"), ("Documents & disclosure", None)], "Documents and mandatory disclosure.",
                      "Everything CBSE requires us to publish, in one place. Each document opens as a PDF.") + f"""
-<section class="section" style="padding-top:36px"><div class="wrap stack-lg">
+<section class="section"><div class="wrap stack-lg">
   <a class="btn btn-brand reveal" href="{UP}/2023/06/Mandatory-Public-Disclosure.pdf" target="_blank" rel="noopener"><i class="ph ph-download-simple"></i>Mandatory public disclosure (PDF)</a>
   <h2 class="reveal" style="padding-top:1.5rem">Certificates and approvals</h2>
   <div class="grid-auto">{"".join(link(t, f, i) for i, (t, f) in enumerate(docs))}</div>
@@ -508,7 +505,7 @@ def methodology(r):
     domains = ["Sensory", "Fine motor", "Language", "Social skills", "Emotional", "Self help", "Cognition", "Physical and gross motor"]
     return page_head(r, [("Academics", None)], "Curriculum and methodology.",
                      "The curriculum complies with CBSE expectations and builds skills for an international context. As per the New Education Policy, Akshara's classes are grouped into four stages.") + f"""
-<section class="section" style="padding-top:32px"><div class="wrap">
+<section class="section"><div class="wrap">
   <nav class="toc" aria-label="Stages"><a href="#foundation">Foundation</a><a href="#preparatory">Preparatory</a><a href="#middle">Middle</a><a href="#secondary">Secondary</a></nav>
   <article class="program" id="foundation"><figure class="reveal"><img src="{img("KSR-children-2.jpg")}" alt="Young learners building with blocks" loading="lazy"></figure>
     <div class="stack reveal"><span class="muted">Pre-KG to Grade II</span><h2>Foundation stage</h2>
@@ -566,13 +563,13 @@ def life(r):
         for k, im, t, p, extra in progs)
     return page_head(r, [("Life at Akshara", None)], "Life at Akshara.",
                      "Spacious classrooms, laboratories, a library, playground, swimming pool, gym and indoor stadium, and a programme that uses all of them.") + f"""
-<section class="section" style="padding-top:32px"><div class="wrap"><nav class="toc" aria-label="Programmes">{toc}</nav>{rows}</div></section>""" + cta_band(r)
+<section class="section"><div class="wrap"><nav class="toc" aria-label="Programmes">{toc}</nav>{rows}</div></section>""" + cta_band(r)
 
 
 def sports(r):
     img = lambda n: f"{r}assets/img/{n}"
     grid = [("cricket.jpg", "Cricket"), ("ches.jpg", "Chess"), ("handball.jpg", "Handball"), ("basketball.jpg", "Basketball"),
-            ("Skatings_sports.jpg", "Skating"), ("vollyball.jpg", "Volleyball"), ("sgfleet.jpg", "Athletics"), ("House-system.jpg", "Inter-house events")]
+            ("sgfleet.jpg", "Athletics"), ("Skatings_sports.jpg", "Skating"), ("vollyball.jpg", "Volleyball")]
     return page_head(r, [("Student life", None), ("Sports", None)], "Sports at Akshara.",
                      "An after-school programme that lets students explore and excel in sport, with a timetable that protects study time.",
                      "Skatings_sports.jpg", "Students skating on the Akshara rink") + f"""
@@ -595,7 +592,7 @@ def sports(r):
 </div></section>
 <section class="section section-tint"><div class="wrap">
   <h2 class="reveal">Eight ways to play</h2>
-  <div class="sport-grid" style="margin-top:2rem">{"".join(f'<figure class="reveal" style="--i:{i % 4}"><img src="{img(a)}" alt="{b}" loading="lazy"><figcaption>{b}</figcaption></figure>' for i, (a, b) in enumerate(grid))}</div>
+  <div class="sport-grid" style="margin-top:2rem">{"".join(f'<figure class="reveal{" wide" if b == "Athletics" else ""}" style="--i:{i % 4}"><img src="{img(a)}" alt="{b}" loading="lazy"><figcaption>{b}</figcaption></figure>' for i, (a, b) in enumerate(grid))}</div>
   <p class="muted reveal" style="margin-top:2rem;max-width:60ch">Students compete in inter-school, district and state-level tournaments, plus friendly matches with neighbouring schools.</p>
 </div></section>""" + cta_band(r)
 
@@ -606,7 +603,7 @@ def holiday(r):
                     for i, (g, f) in enumerate(grades))
     return page_head(r, [("Student life", None), ("Holiday assignments", None)], "Summer holiday assignments.",
                      "Download your child's assignment for the 2025 summer break.") + f"""
-<section class="section" style="padding-top:36px"><div class="wrap"><div class="grid-auto">{cards}</div>
+<section class="section"><div class="wrap"><div class="grid-auto">{cards}</div>
 <p class="note" style="margin-top:1.5rem">In the new site, teachers upload these from the admin panel each term. No developer needed.</p></div></section>"""
 
 
@@ -643,7 +640,7 @@ def transport(r):
     towns = ["Tiruchengode", "Erode", "Kumaramangalam", "Sankari", "Pallipalayam", "Veppadai"]
     return page_head(r, [("Campus", None), ("Transport", None)], "Getting your child to school safely.",
                      "Transporting your children safely is our utmost priority.") + f"""
-<section class="section" style="padding-top:36px"><div class="wrap split">
+<section class="section"><div class="wrap split">
   <img class="media reveal" src="{img("transport-right.jpg")}" alt="Senior students walking to the bus" loading="lazy">
   <div class="stack-lg reveal">
     <div class="stat-row"><div><strong>~1,400</strong><span>students served daily</span></div><div><strong>25 km</strong><span>route radius</span></div></div>
@@ -696,7 +693,7 @@ def testimonials(r):
         + f'<blockquote>&ldquo;{text}&rdquo;</blockquote><figcaption><img src="{img(p)}" alt="" loading="lazy"><div><strong>{n}</strong><span>{role}</span></div></figcaption></figure>')
     return page_head(r, [("Testimonials", None)], "In their words.",
                      "Nobel laureates, industry leaders and Akshara parents on what they have seen at the school.") + f"""
-<section class="section" style="padding-top:36px"><div class="wrap">
+<section class="section"><div class="wrap">
   <h2 class="reveal">Parents</h2>
   <div class="grid-auto" style="margin-top:1.75rem;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">{"".join(q(n, ro, p, t, res) for n, ro, p, res, t in parents)}</div>
   <h2 class="reveal" style="margin-top:4rem">Guests</h2>
@@ -733,7 +730,7 @@ def careers(r):
 def contact(r):
     return page_head(r, [("Contact", None)], "We are here to help.",
                      "Call, write or visit. The admissions office is open on all working days.") + f"""
-<section class="section" style="padding-top:36px" id="visit"><div class="wrap split top">
+<section class="section" id="visit"><div class="wrap split top">
   <div class="contact-list reveal">
     <div class="contact-item"><i class="ph ph-map-pin"></i><div><strong>Visit us</strong><span class="muted">KSR Akshara Academy, KSR Kalvi Nagar,<br>Tiruchengode 637 215, Namakkal District, Tamil Nadu</span></div></div>
     <div class="contact-item"><i class="ph ph-phone"></i><div><strong>Call us</strong><a href="tel:{TEL_1}">{PHONE_1}</a> / <a href="tel:{TEL_2}">{PHONE_2}</a></div></div>
@@ -912,7 +909,7 @@ def news_page(r):
                           f'<span class="link-arrow">{c} <i class="ph ph-arrow-right"></i></span></div></a>' for i, (ic, t, d, u, c) in enumerate(notices))
     return page_head(r, [("News and events", None)], "News and events.",
                      "Celebrations, trips, competitions and classroom moments from across Akshara.") + f"""
-<section class="section" style="padding-top:40px"><div class="wrap news-layout">
+<section class="section"><div class="wrap news-layout">
   <div>
     {news_card(r, lead, 0, big=True, h="h2") if lead else ""}
     <div class="news-grid">{"".join(news_card(r, n, i, h="h2") for i, n in enumerate(rest))}</div>
