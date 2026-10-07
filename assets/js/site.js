@@ -10,7 +10,8 @@
       i.className = dark ? "ph ph-sun" : "ph ph-moon";
     });
   };
-  try { const t = localStorage.getItem("ksr-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+  // a page that sets its own theme in the HTML keeps it
+  try { const t = localStorage.getItem("ksr-theme"); if (t && !root.dataset.theme) root.dataset.theme = t; } catch (e) {}
   setIcon();
   document.querySelectorAll("[data-theme-toggle]").forEach(b => b.addEventListener("click", () => {
     const dark = root.dataset.theme === "dark" ||

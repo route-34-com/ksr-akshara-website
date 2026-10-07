@@ -72,6 +72,17 @@ def news_card(r, n, i=0, big=False, h="h3"):
             f'<{h}>{html.escape(n["title"])}</{h}><p>{html.escape(n["summary"])}</p></div></article>')
 
 
+def kinetic(plain, highlight):
+    """Headline split into words that rise in one after another (pure CSS; text stays readable to screen readers)."""
+    words = [(w, False) for w in plain.split()] + [(w, True) for w in highlight.split()]
+    out, hi = [], False
+    for i, (w, h) in enumerate(words):
+        if h and not hi:
+            out.append("<em>"); hi = True
+        out.append(f'<span class="w" style="--d:{i}">{html.escape(w)}</span> ')
+    return "".join(out).rstrip() + ("</em>" if hi else "")
+
+
 def href(r, slug):
     return f"{r}{slug + '/' if slug else ''}index.html"
 
@@ -111,7 +122,7 @@ def drawer_html(r):
 
 def layout(r, cur, title, desc, body):
     return f"""<!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,20 +131,21 @@ def layout(r, cur, title, desc, body):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:image" content="{r}assets/img/KSR-children.jpg">
-<meta name="theme-color" content="#07406a">
+<meta name="theme-color" content="#04060d">
 <link rel="icon" href="{r}assets/img/favicon.ico?v={VER}" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="{r}assets/img/favicon-32.png?v={VER}">
 <link rel="icon" type="image/png" sizes="16x16" href="{r}assets/img/favicon-16.png?v={VER}">
 <link rel="apple-touch-icon" href="{r}assets/img/apple-touch-icon.png?v={VER}">
-<script>try{{var t=localStorage.getItem("ksr-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 <link rel="preload" href="{r}assets/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{r}assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{r}assets/css/vendor.css?v={VER}">
 <link rel="stylesheet" href="{r}assets/css/site.css?v={VER}">
+<link rel="stylesheet" href="{r}assets/css/cosmos.css?v={VER}">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"School","name":"KSR Akshara Academy","url":"https://ksrakshara.org","telephone":"{TEL_1}","email":"{EMAIL}","address":{{"@type":"PostalAddress","streetAddress":"KSR Kalvi Nagar","addressLocality":"Tiruchengode","addressRegion":"Tamil Nadu","postalCode":"637215","addressCountry":"IN"}}}}</script>
 </head>
 <body{' class="immersive"' if cur == "akshara-tree" else ""}>
 <a class="skip" href="#main">Skip to content</a>
+{"" if cur == "akshara-tree" else '<div class="space" aria-hidden="true"><canvas class="starfield"></canvas><div class="aurora"></div></div>'}
 <div class="utility"><div class="wrap">
   <div class="u-left"><span><i class="ph ph-seal-check"></i>CBSE Affiliation No. 1930318</span><span>Accredited with NIOS</span></div>
   <div class="u-right"><a href="tel:{TEL_1}"><i class="ph ph-phone"></i>{PHONE_1}</a><a href="mailto:{EMAIL}"><i class="ph ph-envelope-simple"></i>{EMAIL}</a></div>
@@ -145,7 +157,6 @@ def layout(r, cur, title, desc, body):
   </a>
   <ul class="nav-links">{nav_html(r, cur)}</ul>
   <div class="nav-cta">
-    <button class="icon-btn" data-theme-toggle aria-label="Toggle dark mode"><i class="ph ph-moon"></i></button>
     <a class="btn btn-primary" href="{href(r, "admission")}">Admissions enquiry</a>
     <button class="icon-btn menu-toggle" data-drawer-open aria-label="Open menu"><i class="ph ph-list"></i></button>
   </div>
@@ -183,6 +194,7 @@ def layout(r, cur, title, desc, body):
 </div></footer>
 <a class="fab" href="https://wa.me/919894932323" aria-label="Chat with the admissions office on WhatsApp">{BRAND_SVG["whatsapp-glyph"]}</a>
 <script src="{r}assets/js/site.js?v={VER}" defer></script>
+<script src="{r}assets/js/cosmos.js?v={VER}" defer></script>
 </body>
 </html>
 """
@@ -304,28 +316,36 @@ def home(r):
             f'<div class="why-item"><i class="ph {ic}"></i><div><strong>{t}</strong><p>{d}</p></div></div>' for ic, t, d in items)
         + "</div></div>" for i, (g, items) in enumerate(why))
     return f"""
-<section class="hero"><div class="wrap hero-bento">
-  <div class="panel intro">
+<section class="hero cosmos-hero"><div class="wrap cosmos-grid">
+  <div class="intro">
     <a class="announce" href="{href(r, "admission")}"><span>Admissions 2027-28</span>Open from Vijayadasami for all classes <i class="ph ph-arrow-right"></i></a>
-    <h1>Nurturing young minds and hearts of <em>tomorrow's leaders.</em></h1>
+    <h1 class="kinetic">{kinetic("Nurturing young minds and hearts of", "tomorrow's leaders.")}</h1>
     <p class="lede">From Pre-KG to Grade XII, Aksharites learn through inquiry, sport, the arts and strong values.</p>
     <div class="hero-ctas">
       <a class="btn btn-primary" href="{href(r, "admission")}">Admissions enquiry <i class="ph ph-arrow-right"></i></a>
       <a class="btn btn-ghost" href="{href(r, "contact-us")}#visit"><i class="ph ph-map-pin"></i>Book a campus visit</a>
     </div>
   </div>
-  <div class="panel tree-panel hero-tree" data-tree="mini" data-link="{href(r, "akshara-tree")}" data-sway-x="{tree["sx"]}" data-sway-y="720">
+  <div class="orbit-stage hero-tree" data-tree="mini" data-link="{href(r, "akshara-tree")}" data-sway-x="{tree["sx"]}" data-sway-y="720">
+    <div class="orbits" aria-hidden="true">
+      <span class="ring r1"><i class="sat"></i></span><span class="ring r2"><i class="sat"></i></span><span class="ring r3"><i class="sat"></i></span>
+    </div>
+    <span class="beacon b1" aria-hidden="true">CBSE 1930318</span>
+    <span class="beacon b2" aria-hidden="true">Pre-KG to XII</span>
+    <span class="beacon b3" aria-hidden="true">3x International School Award</span>
     <div class="tree-stage" style="aspect-ratio:{tree["ratio"]}">{tree["svg"]}<div class="tree-tip" aria-hidden="true"></div></div>
     <a class="link-arrow hero-tree-link" href="{href(r, "akshara-tree")}">Every leaf of our emblem tells a story <i class="ph ph-arrow-right"></i></a>
   </div>
-  <ul class="facts" aria-label="Akshara at a glance">
-    <li class="fact reveal"><strong>1984</strong><span>KSR Educational and Charitable Trust founded</span></li>
-    <li class="fact reveal" style="--i:1"><strong>16</strong><span>KSR institutions, from Pre-KG to Ph.D.</span></li>
-    <li class="fact fact-deep reveal" style="--i:2"><strong>4,500+</strong><span>students across the three KSR schools</span></li>
-    <li class="fact reveal" style="--i:3"><strong>3x</strong><span>British Council International School Award</span></li>
-    <li class="fact reveal" style="--i:4"><strong>25 km</strong><span>GPS-tracked bus network around Tiruchengode</span></li>
-  </ul>
-</div></section>
+</div>
+  <div class="horizon" aria-hidden="true"></div>
+</section>
+<section class="telemetry" aria-label="Akshara at a glance"><ul class="wrap">
+  <li class="reveal"><strong>1984</strong><span>KSR Educational and Charitable Trust founded</span></li>
+  <li class="reveal" style="--i:1"><strong data-count="16">16</strong><span>KSR institutions, from Pre-KG to Ph.D.</span></li>
+  <li class="reveal" style="--i:2"><strong data-count="4500" data-suffix="+">4,500+</strong><span>students across the three KSR schools</span></li>
+  <li class="reveal" style="--i:3"><strong data-count="3" data-suffix="x">3x</strong><span>British Council International School Award</span></li>
+  <li class="reveal" style="--i:4"><strong data-count="25" data-suffix=" km">25 km</strong><span>GPS-tracked bus network around Tiruchengode</span></li>
+</ul></section>
 {tree["data"]}
 
 <section class="section latest"><div class="wrap">
