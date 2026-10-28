@@ -2,10 +2,10 @@
 
 assets/data/akshara-tree-logo.json holds every leaf outline traced from the emblem
 (split along the logo's white gaps, lightly smoothed, tips kept sharp), each leaf's
-own blue sampled from the logo, and the picture inside it: the logo's own drawings,
-traced (dancer, children, veena...) or redrawn where the logo's lines are too fine to
-trace (drama masks, palette, laptop, book, music staff, the chalkboard's writing).
-Pictures are stored in the logo's units and scaled by `pic_scale`.
+own blue sampled from the logo, and what each leaf carries: four keep the logo's own
+drawing (the dancer and the gymnast traced, the music staff and the chalkboard's writing
+redrawn), stored in the logo's units and scaled by `pic_scale`; the rest carry a
+Phosphor icon of the same subject.
 Imported by build.py; run directly to write .tree-preview.svg.
 """
 import json
@@ -18,6 +18,12 @@ SRC = json.loads((ROOT / "assets/data/akshara-tree-logo.json").read_text(encodin
 W = SRC["w"]
 BASE_Y = H = SRC["base_y"]
 OX, OY = SRC["origin"]                      # where the canopy meets the trunk
+ICONS = json.loads((ROOT / "assets/data/tree-icons.json").read_text(encoding="utf-8"))
+
+# the symbol each leaf carries in the logo, as a Phosphor icon (leaves with their own "pic" skip it)
+GLYPH = {"pencil": "pencil-simple", "molecules": "mask-happy", "football": "soccer-ball", "lab": "flask", "compass": "palette",
+         "laptop": "laptop", "veena": "guitar", "sun": "sun", "children": "users-three", "inner1": "book-open"}
+
 
 def parse(d):
     """Absolute M/C/Z path -> list of cubic segments ((x0,y0),(x1,y1),(x2,y2),(x3,y3))."""
@@ -87,12 +93,21 @@ def figure(x, y, size):
             f'<g transform="translate({x - size / 2:.2f} {y - size / 2:.2f}) scale({s:.4f})">{FIGURE}</g></g>')
 
 
+def icon(paths, x, y, size, cls="drawing"):
+    s = size / 256
+    body = "".join(f'<path d="{d}"/>' for d in paths)
+    return (f'<g class="{cls}" style="transform-origin:{x:.1f}px {y:.1f}px">'
+            f'<g transform="translate({x - size / 2:.2f} {y - size / 2:.2f}) scale({s:.4f})">{body}</g></g>')
+
+
 def picture(l):
-    """The logo's picture for this leaf (fills and strokes take the icon colour)."""
-    if "pic" not in l:
-        return ""
-    return (f'<g class="drawing pic" style="transform-origin:{l["icx"]:.1f}px {l["icy"]:.1f}px">'
-            f'<g transform="scale({SRC["pic_scale"]})">{l["pic"]}</g></g>')
+    """What the leaf carries: the logo's own drawing, else its icon (both take the icon colour)."""
+    if "pic" in l:
+        return (f'<g class="drawing pic" style="transform-origin:{l["icx"]:.1f}px {l["icy"]:.1f}px">'
+                f'<g transform="scale({SRC["pic_scale"]})">{l["pic"]}</g></g>')
+    if l["key"] in GLYPH:
+        return icon(ICONS[GLYPH[l["key"]]], l["icx"], l["icy"], l["icon"])
+    return ""
 
 
 if __name__ == "__main__":
@@ -100,7 +115,7 @@ if __name__ == "__main__":
              f'<path d="{trunk()}" fill="{SRC["trunk"]["fill"]}"/>']
     for l in leaves():
         parts.append(f'<path d="{l["d"]}" fill="{l["fill"]}" stroke="#f5f8fb" stroke-width="5" stroke-linejoin="round"/>')
-        parts.append(picture(l).replace('class="drawing pic"', 'fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"'))
+        parts.append(picture(l).replace('class="drawing pic"', 'fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"').replace('class="drawing"', 'fill="#fff"'))
     parts.append(figure(*SCHOLAR).replace('class="drawing figure"', 'fill="#fff" stroke="#fff"'))
     parts.append("</svg>")
     (ROOT / ".tree-preview.svg").write_text("".join(parts), encoding="utf-8")
