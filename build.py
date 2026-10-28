@@ -347,7 +347,7 @@ def home(r):
       <span class="chip"><i class="ph ph-function"></i>Math</span></div>
       <div><h3>Nine clubs to choose from</h3><p class="muted">Every student joins at least one.</p></div></div>
     <a class="tile brand t-robo reveal" href="{href(r, "life-akshara")}#steam"><i class="ph ph-cpu big-icon"></i><h3>STEAM and Robotics</h3><p>From Kindergarten to Grade 8</p></a>
-    <a class="tile brand t-mun reveal" style="--i:1;background:var(--accent)" href="{href(r, "life-akshara")}#mun"><i class="ph ph-globe big-icon"></i><h3>Model UN with IIMUN</h3><p style="color:#ffe3df">Students debate as diplomats</p></a>
+    <a class="tile brand t-mun reveal" style="--i:1;background:var(--accent)" href="{href(r, "life-akshara")}#mun"><i class="ph ph-globe big-icon"></i><h3>Model UN with IIMUN</h3><p style="color:#fff">Students debate as diplomats</p></a>
     <a class="tile photo t-ncc reveal" style="--i:2" href="{href(r, "life-akshara")}#ncc"><img src="{img("ncc.jpg")}" alt="NCC cadets marching in formation" loading="lazy"><h3>NCC, Scouts and Guides</h3><p>Drill, first aid, map reading and camp training</p></a>
   </div>
 </div></section>
@@ -557,7 +557,7 @@ def life(r):
          "Drama, dance, music and visual arts are woven into the curriculum as per the NEP. Every year the Fine Arts Department stages multidisciplinary performances, with students leading choreography and set design.", None),
     ]
     houses = ('<div class="houses"><div class="house" style="background:#c62f45">Anthuriums</div><div class="house" style="background:#2f62c6">Bluebells</div>'
-              '<div class="house" style="background:#b98a00">Daffodils</div><div class="house" style="background:#7d3fb0">Tulips</div></div>')
+              '<div class="house" style="background:#8f6b00">Daffodils</div><div class="house" style="background:#7d3fb0">Tulips</div></div>')
     toc = "".join(f'<a href="#{k}">{t.split(",")[0].split(" (")[0]}</a>' for k, _, t, *_ in progs)
     rows = "".join(
         f'<article class="program" id="{k}"><figure class="reveal"><img src="{img(im)}" alt="{t}" loading="lazy"'
@@ -618,7 +618,7 @@ def hostel(r):
                      "banner-hostel.jpg", "Rows of bunk beds in an Akshara hostel dormitory") + f"""
 <section class="section"><div class="wrap split">
   <div class="stack reveal"><h2>Two ways to board.</h2>
-    <div class="grid-auto" style="grid-template-columns:1fr 1fr;margin-top:1.25rem">
+    <div class="grid-auto" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:1.25rem">
       <div class="card"><i class="ph ph-calendar-check" style="font-size:1.8rem;color:var(--brand)"></i><h3 style="margin-top:.75rem">Five-day boarding</h3><p>Monday to Friday at school, weekends at home. The best of both worlds.</p></div>
       <div class="card"><i class="ph ph-house-line" style="font-size:1.8rem;color:var(--brand)"></i><h3 style="margin-top:.75rem">Full-time boarding</h3><p>A nurturing, home-away-from-home environment.</p></div>
     </div></div>
@@ -887,8 +887,8 @@ def akshara_tree(r):
     <p class="lede">A tree of learning. Tap any leaf to see what it stands for.</p>
     <p class="more">From the child at its roots to the dancer at its crown, it maps out life at Akshara: academics, sport, the arts, values and the wider world.</p>
     <div class="tree-meta">
-      <p class="tree-progress">0 of {len(chip_keys)} leaves explored</p>
       <button class="icon-btn wind-toggle" type="button" aria-pressed="true" aria-label="Pause the wind"><i class="ph ph-wind"></i></button>
+      <span class="wind-label" aria-hidden="true">Wind</span>
     </div>
     <div class="leaf-chips" aria-label="All leaves">{chips}</div>
   </header>

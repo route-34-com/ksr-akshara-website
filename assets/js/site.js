@@ -244,10 +244,8 @@
   const chips = [...hero.querySelectorAll(".leaf-chips button")];
   const leaves = [...svg.querySelectorAll(".leaf")];
   const order = leaves.map(l => l.dataset.key);
-  const progress = hero.querySelector(".tree-progress");
   const liftHover = svg.querySelector(".lift-hover");
   const liftSel = svg.querySelector(".lift-sel");
-  const seen = new Set();
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const canHover = matchMedia("(hover: hover)").matches;
   let active = null, hovered = null;
@@ -323,10 +321,6 @@
     chip && chip.scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
     tip.classList.remove("show");
     history.replaceState(null, "", "#" + key);
-    seen.add(key);
-    if (progress) progress.textContent = seen.size === leaves.length
-      ? "You've explored every leaf of the Akshara tree."
-      : `${seen.size} of ${leaves.length} leaves explored`;
     const visual = d.img
       ? `<figure><img src="${d.img}" alt="${d.alt}"></figure>`
       : `<figure><div class="icon-hero"><i class="ph ${d.icon}"></i></div></figure>`;
