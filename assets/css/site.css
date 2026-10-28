@@ -647,7 +647,7 @@ form.is-sent .form-success { display: block; animation: fadeUp .5s var(--ease); 
 .leaf { cursor: pointer; outline: none; --fill: var(--base); }
 /* colours come from custom properties so the lifted copies (<use>) inherit them */
 .leaf-shape { fill: var(--fill); }
-.leaf-edge { fill: none; stroke: var(--leaf-edge); stroke-width: 3.5; stroke-linejoin: round; pointer-events: none; }
+.leaf-edge { fill: none; stroke: var(--leaf-edge); stroke-width: 5; stroke-linejoin: round; pointer-events: none; }
 .drawing { fill: var(--icon, #fff); pointer-events: none; }
 .figure { stroke: var(--icon, #fff); stroke-linecap: round; stroke-linejoin: round; }
 .leaf:focus-visible .leaf-edge { stroke: var(--brand); stroke-width: 5; }

@@ -52,7 +52,6 @@
 .ph.ph-arrow-left:before { content: "\e058"; }
 .ph.ph-arrow-right:before { content: "\e06c"; }
 .ph.ph-arrow-up-right:before { content: "\e092"; }
-.ph.ph-atom:before { content: "\e5e4"; }
 .ph.ph-bed:before { content: "\e0cc"; }
 .ph.ph-book-open:before { content: "\e0e6"; }
 .ph.ph-book-open-text:before { content: "\e8f2"; }
@@ -65,7 +64,6 @@
 .ph.ph-caret-down:before { content: "\e136"; }
 .ph.ph-chalkboard-teacher:before { content: "\e600"; }
 .ph.ph-check-circle:before { content: "\e184"; }
-.ph.ph-compass-tool:before { content: "\ea0e"; }
 .ph.ph-cooking-pot:before { content: "\e764"; }
 .ph.ph-cpu:before { content: "\e610"; }
 .ph.ph-download-simple:before { content: "\e20c"; }
@@ -90,6 +88,7 @@
 .ph.ph-list:before { content: "\e2f0"; }
 .ph.ph-map-pin:before { content: "\e316"; }
 .ph.ph-map-trifold:before { content: "\e31a"; }
+.ph.ph-mask-happy:before { content: "\e9f4"; }
 .ph.ph-medal:before { content: "\e320"; }
 .ph.ph-megaphone-simple:before { content: "\e642"; }
 .ph.ph-microphone-stage:before { content: "\e75c"; }
@@ -123,7 +122,6 @@
 .ph-fill.ph-arrow-left:before { content: "\e058"; }
 .ph-fill.ph-arrow-right:before { content: "\e06c"; }
 .ph-fill.ph-arrow-up-right:before { content: "\e092"; }
-.ph-fill.ph-atom:before { content: "\e5e4"; }
 .ph-fill.ph-bed:before { content: "\e0cc"; }
 .ph-fill.ph-book-open:before { content: "\e0e6"; }
 .ph-fill.ph-book-open-text:before { content: "\e8f2"; }
@@ -136,7 +134,6 @@
 .ph-fill.ph-caret-down:before { content: "\e136"; }
 .ph-fill.ph-chalkboard-teacher:before { content: "\e600"; }
 .ph-fill.ph-check-circle:before { content: "\e184"; }
-.ph-fill.ph-compass-tool:before { content: "\ea0e"; }
 .ph-fill.ph-cooking-pot:before { content: "\e764"; }
 .ph-fill.ph-cpu:before { content: "\e610"; }
 .ph-fill.ph-download-simple:before { content: "\e20c"; }
@@ -161,6 +158,7 @@
 .ph-fill.ph-list:before { content: "\e2f0"; }
 .ph-fill.ph-map-pin:before { content: "\e316"; }
 .ph-fill.ph-map-trifold:before { content: "\e31a"; }
+.ph-fill.ph-mask-happy:before { content: "\e9f4"; }
 .ph-fill.ph-medal:before { content: "\e320"; }
 .ph-fill.ph-megaphone-simple:before { content: "\e642"; }
 .ph-fill.ph-microphone-stage:before { content: "\e75c"; }

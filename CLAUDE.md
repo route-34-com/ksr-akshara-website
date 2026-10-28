@@ -10,17 +10,16 @@ python3 -m http.server 8765                        # preview at http://localhost
 python3 news_feed.py                               # refresh news from the school's YouTube channel -> assets/data/news.json
 /tmp/ksrvenv/bin/python optimize_images.py         # after adding photos: WebP copies sized for display (Pillow)
 /tmp/ksrvenv/bin/python vendor_assets.py           # after using a new Phosphor icon: re-trim the icon font (fonttools, brotli)
-/tmp/ksrvenv/bin/python tree_geometry.py --bake    # after changing a leaf outline: re-round corners (shapely)
 ```
 
-`/tmp/ksrvenv` is a scratch venv (Pillow, shapely, fonttools, brotli); recreate it if missing. `build.py` itself needs only the standard library.
+`/tmp/ksrvenv` is a scratch venv (Pillow, fonttools, brotli); recreate it if missing. `build.py` itself needs only the standard library.
 
 ## Layout
 
 - `build.py`: every page's HTML lives here as Python f-strings; `PAGES` lists slug, title, description, function. Output is `<slug>/index.html`. Never hand-edit generated `index.html` files.
 - `assets/css/site.css` is hand-written. `assets/css/vendor.css` is generated (fonts + trimmed icons).
 - `assets/js/site.js`: all interactivity, no dependencies.
-- `tree_geometry.py`: the emblem tree. Leaf outlines come from `assets/data/akshara-tree.json` (traced from the logo), polished into `akshara-tree-clean.json` by `--bake`. `DRAWN` hand-draws leaves whose trace was bad (`inner1`); `trunk()` and `FIGURE` are drawn by hand.
+- `tree_geometry.py`: the emblem tree. `assets/data/akshara-tree-logo.json` holds each leaf traced from the emblem along its white gaps (sharp tips, light smoothing), the leaf's own blue sampled from the logo, its icon spot and size, the trunk and the child's position. `FIGURE` is drawn by hand. Leaf icons are Phosphor fill paths in `assets/data/tree-icons.json`; the leaf pictures follow the logo (drama masks, artist's palette, not atom or compass).
 
 ## Rules that are easy to break
 
