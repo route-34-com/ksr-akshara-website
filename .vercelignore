@@ -1,0 +1,6 @@
+*.py
+__pycache__
+CLAUDE.md
+README.md
+.tree-preview.svg
+favicon-options.html

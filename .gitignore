@@ -9,3 +9,4 @@ __pycache__/
 .fig.svg
 assets/fonts/*.full.woff2
 node_modules/
+.vercel

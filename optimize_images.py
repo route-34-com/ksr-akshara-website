@@ -9,7 +9,7 @@ from PIL import Image
 ROOT = Path(__file__).parent
 IMG = ROOT / "assets/img"
 BANNERS = {"KSR-children.jpg", "why-akshara.jpg", "ksr-contact-banner.jpg", "management-banner.jpg",
-           "career-banner.jpg", "transport-banner.jpg", "Skatings_sports.jpg", "admission-image.jpg", "KSR-Hostels.jpg"}
+           "career-banner.jpg", "transport-banner.jpg", "banner-sports.jpg", "banner-admission.jpg", "banner-hostel.jpg", "banner-careers.jpg"}
 
 
 def width_for(p):

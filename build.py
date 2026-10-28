@@ -39,7 +39,7 @@ CUR = ' aria-current="page"'
 CONTAIN = ' style="object-fit:contain;background:var(--surface-2)"'
 
 
-NEWS = json.loads((ROOT / "assets/data/news.json").read_text()) if (ROOT / "assets/data/news.json").exists() else []
+NEWS = json.loads((ROOT / "assets/data/news.json").read_text(encoding="utf-8")) if (ROOT / "assets/data/news.json").exists() else []
 MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
 
 
@@ -457,7 +457,7 @@ def why_akshara(r):
     items = [("ph-flask", "Scientifically researched and planned curriculum"),
              ("ph-lightbulb", "Active, skill-based, experiential and blended learning"),
              ("ph-security-camera", "Unmatched safety with 24 x 7 CCTV security"),
-             ("ph-chalkboard-teacher", "Highly well-trained educators"),
+             ("ph-chalkboard-teacher", "Highly well‑trained educators"),
              ("ph-navigation-arrow", "GPS tracking on every school vehicle"),
              ("ph-bed", "Weekly and regular boarding"),
              ("ph-music-notes", "Dynamic sports and performing arts"),
@@ -575,7 +575,7 @@ def sports(r):
             ("Skatings_sports.jpg", "Skating"), ("vollyball.jpg", "Volleyball"), ("sgfleet.jpg", "Athletics"), ("House-system.jpg", "Inter-house events")]
     return page_head(r, [("Student life", None), ("Sports", None)], "Sports at Akshara.",
                      "An after-school programme that lets students explore and excel in sport, with a timetable that protects study time.",
-                     "Skatings_sports.jpg", "Students skating on the Akshara rink") + f"""
+                     "banner-sports.jpg", "Students playing basketball on the Akshara court") + f"""
 <section class="section"><div class="wrap split top">
   <div class="stack reveal"><h2>World-class football turf.</h2>
     <p class="lede">An international-standard artificial turf built for drills, full matches and evening training under floodlights.</p>
@@ -601,7 +601,7 @@ def sports(r):
 
 
 def holiday(r):
-    grades = [("Senior KG", "SKG"), ("Junior KG", "JKG")] + [(f"Grade {n}", f"Grade-{i}") for i, n in enumerate(["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"], 1)]
+    grades = [("Junior KG", "JKG"), ("Senior KG", "SKG")] + [(f"Grade {n}", f"Grade-{i}") for i, n in enumerate(["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"], 1)]
     cards = "".join(f'<a class="card doc-link reveal" style="--i:{i % 3}" href="{UP}/2025/05/{f}-Holiday-Assignment.pdf" target="_blank" rel="noopener"><i class="ph ph-file-pdf"></i><span>{g}</span><i class="ph ph-download-simple"></i></a>'
                     for i, (g, f) in enumerate(grades))
     return page_head(r, [("Student life", None), ("Holiday assignments", None)], "Summer holiday assignments.",
@@ -615,7 +615,7 @@ def hostel(r):
     img = lambda n: f"{r}assets/img/{n}"
     return page_head(r, [("Campus", None), ("Hostel", None)], "A hi-tech, home-away-from-home hostel.",
                      "Residential life at Akshara helps students grow independent in a safe, secure environment.",
-                     "KSR-Hostels.jpg", "A bright twin room in the Akshara hostel") + f"""
+                     "banner-hostel.jpg", "Rows of bunk beds in an Akshara hostel dormitory") + f"""
 <section class="section"><div class="wrap split">
   <div class="stack reveal"><h2>Two ways to board.</h2>
     <div class="grid-auto" style="grid-template-columns:1fr 1fr;margin-top:1.25rem">
@@ -661,13 +661,13 @@ def admission(r):
     ages = [("Pre-KG", "2 years 5 months as of June"), ("Junior KG", "3 years 2 months"), ("Senior KG", "4 years 2 months"), ("Grade I", "5 years 2 months")]
     return page_head(r, [("Admissions", None)], "Admissions.",
                      "Admissions are open for all classes from Vijayadasami to March for the following academic year.",
-                     "admission-image.jpg", "Senior students reviewing notes together") + f"""
+                     "banner-admission.jpg", "Young Aksharites smiling in their school uniform") + f"""
 <section class="section"><div class="wrap admit">
   <div class="stack-lg reveal">
     <h2>Eligibility by age</h2>
-    <div class="ages" style="margin-top:0">{"".join(f'<div class="age"><strong>{a}</strong><span>{b}</span></div>' for a, b in ages)}</div>
+    <div class="ages" style="margin-top:1rem">{"".join(f'<div class="age"><strong>{a}</strong><span>{b}</span></div>' for a, b in ages)}</div>
     <h2 style="padding-top:1.5rem">How to apply</h2>
-    <ol class="steps" style="margin-top:0">
+    <ol class="steps" style="margin-top:1rem">
       <li><div><strong>Enquire</strong><p>Call us or visit in person and fill in an enquiry form. You can meet the Principal or Vice Principals.</p></div></li>
       <li><div><strong>Collect the application form</strong><p>Available at the school office on payment.</p></div></li>
       <li><div><strong>Entrance examination</strong><p>For Senior KG onwards. Submit the completed form on the day of the exam.</p></div></li>
@@ -698,9 +698,9 @@ def testimonials(r):
                      "Nobel laureates, industry leaders and Akshara parents on what they have seen at the school.") + f"""
 <section class="section" style="padding-top:36px"><div class="wrap">
   <h2 class="reveal">Parents</h2>
-  <div class="grid-auto" style="margin-top:1.75rem;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">{"".join(q(n, ro, p, t, res) for n, ro, p, res, t in parents)}</div>
+  <div class="grid-auto" style="margin-top:1.75rem;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr))">{"".join(q(n, ro, p, t, res) for n, ro, p, res, t in parents)}</div>
   <h2 class="reveal" style="margin-top:4rem">Guests</h2>
-  <div class="grid-auto" style="margin-top:1.75rem;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">{"".join(q(n, ro, p, t) for n, ro, p, t in guests)}</div>
+  <div class="grid-auto" style="margin-top:1.75rem;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr))">{"".join(q(n, ro, p, t) for n, ro, p, t in guests)}</div>
 </div></section>""" + cta_band(r)
 
 
@@ -708,7 +708,7 @@ def testimonials(r):
 def careers(r):
     return page_head(r, [("Careers", None)], "Build your career at Akshara.",
                      "Are you passionate about teaching? Your skills can build the future of many young minds.",
-                     "House-system.jpg", "Akshara staff and students at the house investiture") + f"""
+                     "banner-careers.jpg", "The Akshara teaching staff gathered on campus") + f"""
 <section class="section"><div class="wrap split top">
   <div class="stack-lg reveal"><h2>Lead in the classroom.</h2>
     <p class="lede">Akshara is looking for young, energetic, enthusiastic and dedicated teachers who are fluent in English and ready to lead.</p>
@@ -735,12 +735,12 @@ def contact(r):
                      "Call, write or visit. The admissions office is open on all working days.") + f"""
 <section class="section" style="padding-top:36px" id="visit"><div class="wrap split top">
   <div class="contact-list reveal">
-    <div class="contact-item"><i class="ph ph-map-pin"></i><div><strong>Visit us</strong><span class="muted">KSR Akshara Academy, KSR Kalvi Nagar,<br>Tiruchengode 637 215, Namakkal District, Tamil Nadu</span></div></div>
+    <div class="contact-item"><i class="ph ph-map-pin"></i><div><strong>Visit us</strong><span class="muted">KSR Akshara Academy, KSR Kalvi Nagar, Tiruchengode 637 215, Namakkal District, Tamil Nadu</span></div></div>
     <div class="contact-item"><i class="ph ph-phone"></i><div><strong>Call us</strong><a href="tel:{TEL_1}">{PHONE_1}</a> / <a href="tel:{TEL_2}">{PHONE_2}</a></div></div>
     <div class="contact-item"><i class="ph ph-envelope-simple"></i><div><strong>Email</strong><a href="mailto:{EMAIL}">{EMAIL}</a><br><a href="mailto:{EMAIL_2}">{EMAIL_2}</a></div></div>
     <div class="contact-item"><i class="ph ph-whatsapp-logo"></i><div><strong>WhatsApp</strong><a href="https://wa.me/919894932323">Chat with the admissions office</a></div></div>
   </div>
-  <form class="form-card reveal" data-demo novalidate><h3>Book a campus visit</h3>
+  <form class="form-card reveal" data-demo novalidate><h2 class="form-title">Book a campus visit</h2>
     <div class="form-grid">
       <div class="form-row"><div class="field"><label for="vn">Your name</label><input id="vn" required autocomplete="name"><span class="err">Please enter your name.</span></div>
       <div class="field"><label for="vp">Phone</label><input id="vp" type="tel" required inputmode="numeric" placeholder="10-digit mobile"><span class="err">Enter a valid 10-digit mobile number.</span></div></div>
@@ -807,7 +807,7 @@ def tree_parts(r):
     """The emblem tree SVG plus the data its script needs (used by the tree page and the homepage)."""
     import json
     import tree_geometry as tg
-    icons = json.loads((ROOT / "assets/data/tree-icons.json").read_text())
+    icons = json.loads((ROOT / "assets/data/tree-icons.json").read_text(encoding="utf-8"))
     leaves = tg.leaves()
     defs = [
         '<filter id="lift-hover" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#021a30" flood-opacity=".32"/></filter>',

@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-SRC = json.loads((ROOT / "assets/data/akshara-tree.json").read_text())
+SRC = json.loads((ROOT / "assets/data/akshara-tree.json").read_text(encoding="utf-8"))
 SCALE = 2                                   # work at 2x the trace for rounder numbers
 W, H = SRC["w"] * SCALE, SRC["h"] * SCALE
 OX, OY = (v * SCALE for v in SRC["origin"])  # where the canopy meets the trunk
@@ -139,7 +139,7 @@ def teardrop(base, end, width, n=36):
 
 def leaves():
     out = []
-    baked = json.loads(BAKED.read_text()) if BAKED.exists() else {}
+    baked = json.loads(BAKED.read_text(encoding="utf-8")) if BAKED.exists() else {}
     # paint order: the field-trip leaf tucks its base under the sun leaf
     order = [l for l in SRC["leaves"] if l["key"] != "inner1"]
     order.insert(next(i for i, l in enumerate(order) if l["key"] == "sun"), next(l for l in SRC["leaves"] if l["key"] == "inner1"))
@@ -237,7 +237,7 @@ def bake(radius=8, grow=3, spacing=58):
         n = max(9, round(perim / spacing))
         coarse, _ = resample(ring, n)
         out[l["key"]] = [[round(x, 1), round(y, 1)] for x, y in coarse]
-    BAKED.write_text(json.dumps(out))
+    BAKED.write_text(json.dumps(out), encoding="utf-8")
     print("baked", len(out), "outlines ->", BAKED.relative_to(ROOT))
 
 
@@ -247,7 +247,7 @@ if __name__ == "__main__":
         nums = [int(a) for a in sys.argv[2:]]  # optional: radius grow harmonics
         bake(*nums)
         raise SystemExit
-    icons = json.loads((ROOT / "assets/data/tree-icons.json").read_text())
+    icons = json.loads((ROOT / "assets/data/tree-icons.json").read_text(encoding="utf-8"))
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 {W + 40} {H + 40}" width="600" style="background:#f5f8fb">',
              f'<path d="{trunk()}" fill="#07406a"/>']
     for l in leaves():
@@ -256,5 +256,5 @@ if __name__ == "__main__":
             parts.append(icon(icons[GLYPH[l["key"]]], l["icx"], l["icy"], l["icon"]).replace('class="drawing"', 'fill="#fff"'))
     parts.append(icon(icons["person-arms-spread"], *SCHOLAR).replace('class="drawing"', 'fill="#fff"'))
     parts.append("</svg>")
-    (ROOT / ".tree-preview.svg").write_text("".join(parts))
+    (ROOT / ".tree-preview.svg").write_text("".join(parts), encoding="utf-8")
     print("wrote .tree-preview.svg")

@@ -27,6 +27,18 @@
   document.body.prepend(sentinel);
   new IntersectionObserver(([e]) => header && header.classList.toggle("is-scrolled", !e.isIntersecting)).observe(sentinel);
 
+  // Full menu whenever it fits; the menu button only when it would overflow
+  const nav = header && header.querySelector(".nav");
+  const fitNav = () => {
+    header.classList.remove("nav-compact");
+    if (nav.scrollWidth > nav.clientWidth + 1) header.classList.add("nav-compact");
+  };
+  if (nav) {
+    fitNav();
+    addEventListener("resize", fitNav);
+    document.fonts && document.fonts.ready.then(fitNav);
+  }
+
   // Mobile drawer
   const drawer = document.querySelector(".drawer");
   const openers = document.querySelectorAll("[data-drawer-open]");
@@ -95,15 +107,99 @@
 
   // Active chip in sticky page TOC
   const toc = document.querySelector(".toc");
+  if (toc) {
+    // fade whichever edge still hides chips
+    const edges = () => {
+      toc.classList.toggle("more-l", toc.scrollLeft > 4);
+      toc.classList.toggle("more-r", toc.scrollLeft + toc.clientWidth < toc.scrollWidth - 4);
+    };
+    toc.addEventListener("scroll", edges, { passive: true });
+    addEventListener("resize", edges);
+    edges();
+  }
   if (toc && "IntersectionObserver" in window) {
     const links = [...toc.querySelectorAll("a")];
     const io = new IntersectionObserver(entries => entries.forEach(en => {
       if (en.isIntersecting) {
         links.forEach(l => l.classList.toggle("is-active", l.hash === "#" + en.target.id));
+        // keep the active chip in view; scrollTo moves only the strip, never the page
+        const on = links.find(l => l.hash === "#" + en.target.id);
+        if (on && (on.offsetLeft < toc.scrollLeft || on.offsetLeft + on.offsetWidth > toc.scrollLeft + toc.clientWidth))
+          toc.scrollTo({ left: on.offsetLeft - 16, behavior: reduce ? "auto" : "smooth" });
       }
     }), { rootMargin: "-40% 0px -55% 0px" });
     links.forEach(l => { const s = document.querySelector(l.hash); s && io.observe(s); });
   }
+
+  // Date picker: a styled calendar on mouse devices; touch keeps the phone's own picker
+  if (matchMedia("(pointer: fine)").matches) document.querySelectorAll('.field input[type="date"]').forEach(input => {
+    const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const wrap = document.createElement("div");
+    wrap.className = "datefield";
+    input.replaceWith(wrap);
+    // the form submits the ISO date; the visible box shows a readable one
+    const value = document.createElement("input");
+    value.type = "hidden"; value.name = input.name || input.id;
+    input.removeAttribute("name");
+    input.type = "text"; input.inputMode = "none"; input.autocomplete = "off"; input.placeholder = "Select a date";
+    input.setAttribute("aria-haspopup", "dialog");
+    const cal = document.createElement("div");
+    cal.className = "cal"; cal.hidden = true; cal.setAttribute("role", "dialog"); cal.setAttribute("aria-label", "Choose a date");
+    const icon = document.createElement("i");
+    icon.className = "ph ph-calendar-check"; icon.setAttribute("aria-hidden", "true");
+    wrap.append(input, icon, value, cal);
+
+    let view = new Date(today.getFullYear(), today.getMonth(), 1), picked = null;
+    const render = focusDay => {
+      const y = view.getFullYear(), m = view.getMonth();
+      const lead = new Date(y, m, 1).getDay(), count = new Date(y, m + 1, 0).getDate();
+      const atStart = y === today.getFullYear() && m === today.getMonth();
+      let cells = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(d => `<span>${d}</span>`).join("") + "<i></i>".repeat(lead);
+      for (let d = 1; d <= count; d++) {
+        const day = new Date(y, m, d), key = iso(day);
+        cells += `<button type="button" data-day="${key}"${day < today ? " disabled" : ""}${key === iso(today) ? ' class="today"' : ""}` +
+                 ` aria-selected="${picked === key}" aria-label="${day.toDateString()}">${d}</button>`;
+      }
+      cal.innerHTML = `<div class="cal-head"><button type="button" data-step="-1" aria-label="Previous month"${atStart ? " disabled" : ""}><i class="ph ph-arrow-left"></i></button>` +
+        `<strong aria-live="polite">${MONTHS[m]} ${y}</strong><button type="button" data-step="1" aria-label="Next month"><i class="ph ph-arrow-right"></i></button></div>` +
+        `<div class="cal-grid">${cells}</div>`;
+      if (focusDay) (cal.querySelector(`[data-day="${focusDay}"]:not(:disabled)`) || cal.querySelector("[data-day]:not(:disabled)")).focus();
+    };
+    const open = () => { if (!cal.hidden) return; render(); cal.hidden = false; input.setAttribute("aria-expanded", "true"); };
+    const close = refocus => { cal.hidden = true; input.setAttribute("aria-expanded", "false"); refocus && input.focus(); };
+    const choose = key => {
+      picked = key; value.value = key;
+      const [y, m, d] = key.split("-").map(Number);
+      input.value = new Date(y, m - 1, d).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+      close(true);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    input.addEventListener("click", open);
+    input.addEventListener("keydown", e => {
+      if (["Enter", " ", "ArrowDown"].includes(e.key)) { e.preventDefault(); open(); render(picked || iso(today)); }
+      else if (e.key === "Escape") close();
+      else if (e.key !== "Tab") e.preventDefault();
+    });
+    cal.addEventListener("click", e => {
+      const step = e.target.closest("[data-step]"), day = e.target.closest("[data-day]");
+      if (step && !step.disabled) { view.setMonth(view.getMonth() + Number(step.dataset.step)); render(); }
+      else if (day && !day.disabled) choose(day.dataset.day);
+    });
+    cal.addEventListener("keydown", e => {
+      const day = e.target.closest("[data-day]");
+      if (e.key === "Escape") { e.stopPropagation(); close(true); return; }
+      const move = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
+      if (!day || !move) return;
+      e.preventDefault();
+      const [y, m, d] = day.dataset.day.split("-").map(Number), next = new Date(y, m - 1, d + move);
+      if (next < today) return;
+      if (next.getMonth() !== view.getMonth()) view = new Date(next.getFullYear(), next.getMonth(), 1);
+      render(iso(next));
+    });
+    document.addEventListener("click", e => { if (!wrap.contains(e.target)) close(); });
+  });
 
   // Forms: inline validation + success state (demo, not connected to a backend)
   document.querySelectorAll("form[data-demo]").forEach(form => {

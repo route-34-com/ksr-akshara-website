@@ -60,7 +60,7 @@ def fetch():
                         out.write_bytes(data); shrink(out); break
                 except Exception:
                     continue
-    (ROOT / "assets/data/news.json").write_text(json.dumps(items, indent=1, ensure_ascii=False))
+    (ROOT / "assets/data/news.json").write_text(json.dumps(items, indent=1, ensure_ascii=False), encoding="utf-8")
     print(f"saved {len(items)} items")
 
 
