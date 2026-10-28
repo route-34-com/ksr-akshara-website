@@ -807,7 +807,6 @@ def tree_parts(r):
     """The emblem tree SVG plus the data its script needs (used by the tree page and the homepage)."""
     import json
     import tree_geometry as tg
-    icons = json.loads((ROOT / "assets/data/tree-icons.json").read_text(encoding="utf-8"))
     leaves = tg.leaves()
     defs = [
         '<filter id="lift-hover" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#021a30" flood-opacity=".32"/></filter>',
@@ -840,7 +839,7 @@ def tree_parts(r):
                 f'<g {wind}><g class="leaf-in" id="lv-{k}" style="transform-origin:{ix:.1f}px {iy:.1f}px">'
                 f'<path class="leaf-shape" d="{l["d"]}"/><path d="{l["d"]}" fill="url(#sheen)" pointer-events="none"/>'
                 f'<path class="leaf-edge" d="{l["d"]}"/>'
-                f'{tg.icon(icons[tg.GLYPH[k]], ix, iy, l["icon"])}</g></g></g>')
+                f'{tg.picture(l)}</g></g></g>')
 
     canopy_svg = "".join(leaf_svg(l) for l in leaves)
     sx, sy, ss = tg.SCHOLAR

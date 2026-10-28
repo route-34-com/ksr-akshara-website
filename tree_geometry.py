@@ -2,7 +2,10 @@
 
 assets/data/akshara-tree-logo.json holds every leaf outline traced from the emblem
 (split along the logo's white gaps, lightly smoothed, tips kept sharp), each leaf's
-own blue sampled from the logo, the spot and size for its icon, and the trunk.
+own blue sampled from the logo, and the picture inside it: the logo's own drawings,
+traced (dancer, children, veena...) or redrawn where the logo's lines are too fine to
+trace (drama masks, palette, laptop, book, music staff, the chalkboard's writing).
+Pictures are stored in the logo's units and scaled by `pic_scale`.
 Imported by build.py; run directly to write .tree-preview.svg.
 """
 import json
@@ -15,12 +18,6 @@ SRC = json.loads((ROOT / "assets/data/akshara-tree-logo.json").read_text(encodin
 W = SRC["w"]
 BASE_Y = H = SRC["base_y"]
 OX, OY = SRC["origin"]                      # where the canopy meets the trunk
-
-# the symbol each leaf carries in the logo, as a Phosphor icon
-GLYPH = {"dancer": "person-simple-tai-chi", "pencil": "pencil-simple", "molecules": "mask-happy", "football": "soccer-ball",
-         "lab": "flask", "compass": "palette", "math": "math-operations", "laptop": "laptop", "veena": "guitar",
-         "sun": "sun", "gymnast": "person-simple-throw", "children": "users-three", "music": "music-notes", "inner1": "book-open"}
-
 
 def parse(d):
     """Absolute M/C/Z path -> list of cubic segments ((x0,y0),(x1,y1),(x2,y2),(x3,y3))."""
@@ -90,21 +87,20 @@ def figure(x, y, size):
             f'<g transform="translate({x - size / 2:.2f} {y - size / 2:.2f}) scale({s:.4f})">{FIGURE}</g></g>')
 
 
-def icon(paths, x, y, size, cls="drawing"):
-    s = size / 256
-    body = "".join(f'<path d="{d}"/>' for d in paths)
-    return (f'<g class="{cls}" style="transform-origin:{x:.1f}px {y:.1f}px">'
-            f'<g transform="translate({x - size / 2:.2f} {y - size / 2:.2f}) scale({s:.4f})">{body}</g></g>')
+def picture(l):
+    """The logo's picture for this leaf (fills and strokes take the icon colour)."""
+    if "pic" not in l:
+        return ""
+    return (f'<g class="drawing pic" style="transform-origin:{l["icx"]:.1f}px {l["icy"]:.1f}px">'
+            f'<g transform="scale({SRC["pic_scale"]})">{l["pic"]}</g></g>')
 
 
 if __name__ == "__main__":
-    icons = json.loads((ROOT / "assets/data/tree-icons.json").read_text(encoding="utf-8"))
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 {W + 40} {H + 40}" width="600" style="background:#f5f8fb">',
              f'<path d="{trunk()}" fill="{SRC["trunk"]["fill"]}"/>']
     for l in leaves():
         parts.append(f'<path d="{l["d"]}" fill="{l["fill"]}" stroke="#f5f8fb" stroke-width="5" stroke-linejoin="round"/>')
-        if not l["deco"]:
-            parts.append(icon(icons[GLYPH[l["key"]]], l["icx"], l["icy"], l["icon"]).replace('class="drawing"', 'fill="#fff"'))
+        parts.append(picture(l).replace('class="drawing pic"', 'fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"'))
     parts.append(figure(*SCHOLAR).replace('class="drawing figure"', 'fill="#fff" stroke="#fff"'))
     parts.append("</svg>")
     (ROOT / ".tree-preview.svg").write_text("".join(parts), encoding="utf-8")

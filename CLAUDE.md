@@ -19,7 +19,7 @@ python3 news_feed.py                               # refresh news from the schoo
 - `build.py`: every page's HTML lives here as Python f-strings; `PAGES` lists slug, title, description, function. Output is `<slug>/index.html`. Never hand-edit generated `index.html` files.
 - `assets/css/site.css` is hand-written. `assets/css/vendor.css` is generated (fonts + trimmed icons).
 - `assets/js/site.js`: all interactivity, no dependencies.
-- `tree_geometry.py`: the emblem tree. `assets/data/akshara-tree-logo.json` holds each leaf traced from the emblem along its white gaps (sharp tips, light smoothing), the leaf's own blue sampled from the logo, its icon spot and size, the trunk and the child's position. `FIGURE` is drawn by hand. Leaf icons are Phosphor fill paths in `assets/data/tree-icons.json`; the leaf pictures follow the logo (drama masks, artist's palette, not atom or compass).
+- `tree_geometry.py`: the emblem tree. `assets/data/akshara-tree-logo.json` holds each leaf traced from the emblem along its white gaps (sharp tips, light smoothing), the leaf's own blue sampled from the logo, the logo's own picture for each leaf as SVG (traced, or redrawn where the logo's lines are too fine: masks, palette, laptop, book, staff, chalkboard writing), the trunk and the child's position. `FIGURE` is drawn by hand. The `inner1` leaf has no picture, as in the logo.
 
 ## Rules that are easy to break
 

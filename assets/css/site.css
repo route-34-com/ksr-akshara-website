@@ -652,6 +652,7 @@ form.is-sent .form-success { display: block; animation: fadeUp .5s var(--ease); 
 .leaf-shape { fill: var(--fill); }
 .leaf-edge { fill: none; stroke: var(--leaf-edge); stroke-width: 5; stroke-linejoin: round; pointer-events: none; }
 .drawing { fill: var(--icon, #fff); pointer-events: none; }
+.pic { stroke: var(--icon, #fff); stroke-linecap: round; stroke-linejoin: round; }
 .figure { stroke: var(--icon, #fff); stroke-linecap: round; stroke-linejoin: round; }
 .leaf:focus-visible .leaf-edge { stroke: var(--brand); stroke-width: 5; }
 /* lifted copies: the real leaves never move, so nothing can end up hidden */
