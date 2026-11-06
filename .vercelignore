@@ -1,6 +1,11 @@
 *.py
+sitegen
 __pycache__
 CLAUDE.md
 README.md
 .tree-preview.svg
 favicon-options.html
+reports
+research_notes
+KSR_docs
+.playwright-mcp

@@ -1,0 +1,15 @@
+{
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "missing": [{ "type": "host", "value": "ksrakshara.org" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ],
+  "redirects": [
+    { "source": "/thank-you/?", "destination": "/contact-us/", "permanent": true },
+    { "source": "/dt_testimonials/:path*", "destination": "/testimonial/", "permanent": true },
+    { "source": "/wp-content/uploads/:path*", "destination": "/assets/docs/:path*", "permanent": true }
+  ]
+}

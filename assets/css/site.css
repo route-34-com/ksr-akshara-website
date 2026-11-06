@@ -734,3 +734,8 @@ form.is-sent .form-success { display: block; animation: fadeUp .5s var(--ease); 
 .hero-grid:has(.hero-tree) { grid-template-columns: .9fr 1.1fr; }
 @media (max-width: 900px) { .hero-grid:has(.hero-tree) { grid-template-columns: 1fr; } }
 .hero-grid:has(.hero-tree) h1 { font-size: clamp(2.2rem, 3.9vw, 3.4rem); }
+
+.faq { margin-top: 1rem; }
+.faq h3 { font-size: 1.05rem; margin-top: 1.1rem; }
+.faq p { margin-top: .25rem; }
+h1 .eyebrow { display: flex; margin-bottom: .75rem; }

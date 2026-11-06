@@ -5,7 +5,7 @@ A pitch prototype for a new ksrakshara.org (CBSE school, Tiruchengode). Static H
 ## Commands
 
 ```bash
-python3 build.py                                   # regenerate every page (run after any change to build.py or data)
+python3 build.py                                   # regenerate every page, sitemap.xml and robots.txt (run after any change to sitegen/ or data)
 python3 -m http.server 8765                        # preview at http://localhost:8765/
 python3 news_feed.py                               # refresh news from the school's YouTube channel -> assets/data/news.json
 /tmp/ksrvenv/bin/python optimize_images.py         # after adding photos: WebP copies sized for display (Pillow)
@@ -16,7 +16,9 @@ python3 news_feed.py                               # refresh news from the schoo
 
 ## Layout
 
-- `build.py`: every page's HTML lives here as Python f-strings; `PAGES` lists slug, title, description, function. Output is `<slug>/index.html`. Never hand-edit generated `index.html` files.
+- `build.py`: thin entry point. `sitegen/` holds the generator: `config.py` (contact details, nav, SEO identity), `layout.py` (page shell and head tags), `components.py` (shared blocks), `news.py`, `output.py` (writes pages, sitemap, robots), `pages/<topic>.py` (one module per page group). `sitegen/pages/__init__.py` has `PAGES`: slug, title, description, function. Output is `<slug>/index.html`. Never hand-edit generated `index.html` files.
+- `vercel.json`: redirects for old WordPress URLs, trailing slashes, and `noindex` on every host except ksrakshara.org. `GA_ID` in `config.py` stays empty until the school's account owner is confirmed.
+- `assets/docs/`: PDFs moved from WordPress, keeping the upload path after `wp-content/uploads/`.
 - `assets/css/site.css` is hand-written. `assets/css/vendor.css` is generated (fonts + trimmed icons).
 - `assets/js/site.js`: all interactivity, no dependencies.
 - `tree_geometry.py`: the emblem tree. `assets/data/akshara-tree-logo.json` holds each leaf traced from the emblem along its white gaps (sharp tips, light smoothing), the leaf's own blue sampled from the logo, the logo's own drawing for four leaves (dancer, gymnast, music staff, chalkboard writing) as SVG, the trunk and the child's position. The other leaves carry Phosphor icons from `assets/data/tree-icons.json` via `GLYPH` (drama masks and a palette, as in the logo, not an atom or compass). `FIGURE` is drawn by hand.
@@ -40,4 +42,4 @@ python3 news_feed.py                               # refresh news from the schoo
 
 - Test in WebKit (Playwright), not only Chrome: this site has had Safari-only bugs.
 - Check phones at 390px wide for horizontal overflow.
-- Lighthouse (mobile) was 96-98 performance and 100 accessibility / best practices / SEO; don't regress it (no external CSS or font CDNs).
+- Run Lighthouse (mobile) before quoting scores, and don't regress them (no external CSS or font CDNs).

@@ -18,7 +18,7 @@ STYLES = {"regular": ("ph", "Phosphor"), "fill": ("ph-fill", "Phosphor-Fill")}
 
 def used_icons():
     text = "".join(p.read_text(encoding="utf-8", errors="ignore") for p in
-                   [ROOT / "build.py", ROOT / "assets/js/site.js", *ROOT.glob("**/index.html")])
+                   [*ROOT.glob("sitegen/**/*.py"), ROOT / "assets/js/site.js", *ROOT.glob("**/index.html")])
     names = set(re.findall(r"\bph-([a-z0-9]+(?:-[a-z0-9]+)*)", text))
     return sorted(names - {"fill"})
 

@@ -95,7 +95,7 @@ pip install pillow fonttools brotli
 ### Building and Previewing
 
 ```bash
-python3 build.py              # regenerates every page from build.py
+python3 build.py              # regenerates every page from sitegen/
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
@@ -114,7 +114,7 @@ Run the last two with the virtual environment from Step 2 activated.
 
 ### Editing Content
 
-- Every page's HTML lives in `build.py`; `PAGES` lists slug, title, description and function. Never hand-edit the generated `index.html` files
+- Page HTML lives in `sitegen/pages/`; `sitegen/pages/__init__.py` lists slug, title, description and function in `PAGES`. Never hand-edit the generated `index.html` files
 - Styles: `assets/css/site.css` (hand-written). `assets/css/vendor.css` is generated
 - Interactivity: `assets/js/site.js`, no dependencies
 - The tree: `tree_geometry.py`, with leaf data in `assets/data/akshara-tree-logo.json`
@@ -167,7 +167,8 @@ The concept was measured on a local server; real hosting will add some network t
 
 ```
 ksr-akshara-website/
-├── build.py                 # Every page's HTML; writes <slug>/index.html
+├── build.py                 # Entry point; runs sitegen
+├── sitegen/                 # Generator: config, layout, components, pages/; writes <slug>/index.html
 ├── tree_geometry.py         # The emblem tree
 ├── news_feed.py             # Pulls news from the school's YouTube channel
 ├── optimize_images.py       # WebP copies of photos (Pillow)
