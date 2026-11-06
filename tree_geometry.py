@@ -82,7 +82,7 @@ FIGURE = ('<path d="M50 6L67 12.5L50 19L33 12.5Z" stroke-width="2"/>'
           '<path d="M42 16V21.5Q50 25.5 58 21.5V16L50 19Z" stroke-width="1.5"/>'
           '<path d="M64 13.8V23" fill="none" stroke-width="1.8"/><circle cx="64" cy="25" r="2.1" stroke="none"/>'
           '<circle cx="50" cy="31.5" r="8" stroke="none"/>'
-          '<path d="M41.5 47Q31 38 21 15" fill="none" stroke-width="7"/><path d="M58.5 47Q69 38 79 15" fill="none" stroke-width="7"/>'
+          '<path d="M41.5 47Q32 38 27 15" fill="none" stroke-width="7"/><path d="M58.5 47Q68 38 73 15" fill="none" stroke-width="7"/>'
           '<path d="M41 45Q50 41 59 45L64.5 85Q50 89.5 35.5 85Z" stroke-width="3"/>'
           '<path d="M45 86V95.5M55 86V95.5" fill="none" stroke-width="6.5"/>')
 
