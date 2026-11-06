@@ -17,7 +17,7 @@ python3 news_feed.py                               # refresh news from the schoo
 ## Layout
 
 - `build.py`: thin entry point. `sitegen/` holds the generator: `config.py` (contact details, nav, SEO identity), `layout.py` (page shell and head tags), `components.py` (shared blocks), `news.py`, `output.py` (writes pages, sitemap, robots), `pages/<topic>.py` (one module per page group). `sitegen/pages/__init__.py` has `PAGES`: slug, title, description, function. Output is `<slug>/index.html`. Never hand-edit generated `index.html` files.
-- `vercel.json`: redirects for old WordPress URLs, trailing slashes, and `noindex` on every host except ksrakshara.org. `GA_ID` in `config.py` stays empty until the school's account owner is confirmed.
+- `vercel.json`: redirects for old WordPress URLs and trailing slashes. `GA_ID` in `config.py` stays empty until the school's account owner is confirmed.
 - `assets/docs/`: PDFs moved from WordPress, keeping the upload path after `wp-content/uploads/`.
 - `assets/css/site.css` is hand-written. `assets/css/vendor.css` is generated (fonts + trimmed icons).
 - `assets/js/site.js`: all interactivity, no dependencies.

@@ -1,12 +1,5 @@
 {
   "trailingSlash": true,
-  "headers": [
-    {
-      "source": "/(.*)",
-      "missing": [{ "type": "host", "value": "ksrakshara.org" }],
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
-    }
-  ],
   "redirects": [
     { "source": "/thank-you", "destination": "/contact-us/", "permanent": true },
     { "source": "/thank-you/", "destination": "/contact-us/", "permanent": true },
