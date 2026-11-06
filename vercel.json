@@ -10,7 +10,7 @@
   "redirects": [
     { "source": "/thank-you", "destination": "/contact-us/", "permanent": true },
     { "source": "/thank-you/", "destination": "/contact-us/", "permanent": true },
-    { "source": "/dt_testimonials/:path*", "destination": "/testimonial/", "permanent": true },
+    { "source": "/dt_testimonials/(.*)", "destination": "/testimonial/", "permanent": true },
     { "source": "/wp-content/uploads/:path*", "destination": "/assets/docs/:path*", "permanent": true }
   ]
 }
